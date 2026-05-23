@@ -1,0 +1,15 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { ConsoleShell } from '../components/ConsoleShell.tsx';
+
+export interface Props {
+  title?: string;
+}
+const { title = 'Console' } = Astro.props;
+const pathname = Astro.url.pathname;
+---
+<BaseLayout title={title}>
+  <ConsoleShell activeHref={pathname} title={title} client:load>
+    <slot />
+  </ConsoleShell>
+</BaseLayout>

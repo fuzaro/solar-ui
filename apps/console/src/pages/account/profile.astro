@@ -1,0 +1,7 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { ProfilePage } from '../../components/account/ProfilePage.tsx';
+---
+<AppLayout title="Profile">
+  <ProfilePage client:load />
+</AppLayout>

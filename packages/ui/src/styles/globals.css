@@ -1,0 +1,203 @@
+@import "tailwindcss";
+
+@theme {
+  /* ─── Backgrounds ─────────────────────────────────────── */
+  --color-solar-bg:           #08090C;
+  --color-solar-surface:      #0F1117;
+  --color-solar-panel:        #141720;
+  --color-solar-card:         #191D2B;
+  --color-solar-card-hover:   #1E2236;
+  --color-solar-elevated:     #232840;
+  --color-solar-border:       #1E2438;
+  --color-solar-border-hover: #2A3050;
+  --color-solar-divider:      #141928;
+
+  /* ─── Text ─────────────────────────────────────────────── */
+  --color-solar-text-primary:   #E8EAF2;
+  --color-solar-text-secondary: #8B93B3;
+  --color-solar-text-muted:     #4B5278;
+  --color-solar-text-disabled:  #2D3454;
+  --color-solar-text-inverse:   #08090C;
+  --color-solar-text-link:      #60A5FA;
+
+  /* ─── Planet Colors ─────────────────────────────────────── */
+  --color-sun:              #F59E0B;
+  --color-sun-light:        #FBBF24;
+  --color-sun-dim:          #92400E;
+  --color-sun-surface:      rgba(245, 158, 11, 0.08);
+  --color-sun-glow:         rgba(245, 158, 11, 0.20);
+
+  --color-moon:             #6366F1;
+  --color-moon-light:       #818CF8;
+  --color-moon-dim:         #3730A3;
+  --color-moon-surface:     rgba(99, 102, 241, 0.08);
+  --color-moon-glow:        rgba(99, 102, 241, 0.20);
+
+  --color-mercury:          #06B6D4;
+  --color-mercury-light:    #22D3EE;
+  --color-mercury-dim:      #0E7490;
+  --color-mercury-surface:  rgba(6, 182, 212, 0.08);
+  --color-mercury-glow:     rgba(6, 182, 212, 0.20);
+
+  --color-venus:            #F43F5E;
+  --color-venus-light:      #FB7185;
+  --color-venus-dim:        #9F1239;
+  --color-venus-surface:    rgba(244, 63, 94, 0.08);
+  --color-venus-glow:       rgba(244, 63, 94, 0.20);
+
+  --color-mars:             #EA580C;
+  --color-mars-light:       #F97316;
+  --color-mars-dim:         #7C2D12;
+  --color-mars-surface:     rgba(234, 88, 12, 0.08);
+  --color-mars-glow:        rgba(234, 88, 12, 0.20);
+
+  --color-saturn:           #D97706;
+  --color-saturn-light:     #F59E0B;
+  --color-saturn-dim:       #78350F;
+  --color-saturn-surface:   rgba(217, 119, 6, 0.08);
+  --color-saturn-glow:      rgba(217, 119, 6, 0.20);
+
+  --color-neptune:          #3B82F6;
+  --color-neptune-light:    #60A5FA;
+  --color-neptune-dim:      #1D4ED8;
+  --color-neptune-surface:  rgba(59, 130, 246, 0.08);
+  --color-neptune-glow:     rgba(59, 130, 246, 0.20);
+
+  --color-pluto:            #64748B;
+  --color-pluto-light:      #94A3B8;
+  --color-pluto-dim:        #334155;
+  --color-pluto-surface:    rgba(100, 116, 139, 0.08);
+  --color-pluto-glow:       rgba(100, 116, 139, 0.20);
+
+  --color-themis:           #8B5CF6;
+  --color-themis-light:     #A78BFA;
+  --color-themis-dim:       #4C1D95;
+  --color-themis-surface:   rgba(139, 92, 246, 0.08);
+  --color-themis-glow:      rgba(139, 92, 246, 0.20);
+
+  --color-jupiter:          #10B981;
+  --color-jupiter-light:    #34D399;
+  --color-jupiter-dim:      #065F46;
+  --color-jupiter-surface:  rgba(16, 185, 129, 0.08);
+  --color-jupiter-glow:     rgba(16, 185, 129, 0.20);
+
+  /* ─── AURA Status Bands ─────────────────────────────────── */
+  --color-aura-green:        #22C55E;
+  --color-aura-green-glow:   rgba(34, 197, 94, 0.15);
+  --color-aura-yellow:       #EAB308;
+  --color-aura-yellow-glow:  rgba(234, 179, 8, 0.15);
+  --color-aura-orange:       #F97316;
+  --color-aura-orange-glow:  rgba(249, 115, 22, 0.15);
+  --color-aura-red:          #EF4444;
+  --color-aura-red-glow:     rgba(239, 68, 68, 0.15);
+  --color-aura-violet:       #8B5CF6;
+  --color-aura-violet-glow:  rgba(139, 92, 246, 0.15);
+  --color-aura-dim:          #6B7280;
+  --color-aura-dim-glow:     rgba(107, 114, 128, 0.15);
+
+  /* ─── Fonts ─────────────────────────────────────────────── */
+  --font-sans:    "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono:    "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+  --font-display: "Inter", ui-sans-serif, sans-serif;
+
+  /* ─── Radius ─────────────────────────────────────────────── */
+  --radius-xs:  0.25rem;
+  --radius-sm:  0.375rem;
+  --radius-md:  0.5rem;
+  --radius-lg:  0.75rem;
+  --radius-xl:  1rem;
+  --radius-2xl: 1.5rem;
+
+  /* ─── Shadows ────────────────────────────────────────────── */
+  --shadow-glow-sm:  0 0 8px  var(--glow-color, rgba(99,102,241,0.2));
+  --shadow-glow-md:  0 0 16px var(--glow-color, rgba(99,102,241,0.3));
+  --shadow-glow-lg:  0 0 32px var(--glow-color, rgba(99,102,241,0.4));
+  --shadow-card:     0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-modal:    0 20px 60px rgba(0,0,0,0.7);
+}
+
+/* ─── Base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-family: var(--font-sans);
+  background: var(--color-solar-bg);
+  color: var(--color-solar-text-primary);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-solar-border); }
+::-webkit-scrollbar-thumb { background: var(--color-solar-border-hover); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-solar-text-muted); }
+
+/* ─── Focus ring ──────────────────────────────────────────── */
+:focus-visible { outline: 2px solid var(--color-moon); outline-offset: 2px; }
+
+/* ─── Selection ───────────────────────────────────────────── */
+::selection { background: rgba(99, 102, 241, 0.3); color: var(--color-solar-text-primary); }
+
+/* ─── Animations ──────────────────────────────────────────── */
+@keyframes solar-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+@keyframes solar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes solar-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes solar-ping {
+  0% { transform: scale(1); opacity: 1; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes solar-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes solar-slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes solar-slide-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* ─── Utility classes ─────────────────────────────────────── */
+.solar-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-solar-card) 25%,
+    var(--color-solar-elevated) 50%,
+    var(--color-solar-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: solar-shimmer 1.5s infinite;
+}
+
+.solar-glow-sm { box-shadow: var(--shadow-glow-sm); }
+.solar-glow-md { box-shadow: var(--shadow-glow-md); }
+.solar-glow-lg { box-shadow: var(--shadow-glow-lg); }
+
+/* ─── Font face hints (apps will load these) ──────────────── */
+@layer base {
+  code, pre, kbd, samp { font-family: var(--font-mono); }
+}

@@ -1,0 +1,7 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { ActiveTasks } from '../../components/tasks/ActiveTasks.tsx';
+---
+<AppLayout title="Tasks">
+  <ActiveTasks client:load />
+</AppLayout>

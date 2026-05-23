@@ -1,0 +1,15 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { EngineeringShell } from '../components/EngineeringShell.tsx';
+
+export interface Props {
+  title?: string;
+}
+const { title = 'Engineering' } = Astro.props;
+const pathname = Astro.url.pathname;
+---
+<BaseLayout title={title}>
+  <EngineeringShell activeHref={pathname} title={title} client:load>
+    <slot />
+  </EngineeringShell>
+</BaseLayout>

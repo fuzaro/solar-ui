@@ -1,0 +1,7 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { ModelRegistry } from '../../components/models/ModelRegistry.tsx';
+---
+<AppLayout title="Model Registry">
+  <ModelRegistry client:load />
+</AppLayout>
