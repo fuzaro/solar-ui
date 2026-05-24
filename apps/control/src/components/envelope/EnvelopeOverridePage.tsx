@@ -20,7 +20,7 @@ import type { EnvelopeOverride, EnvelopeOverrideValidationError } from '@solar/a
 import { ENFORCED_ENVELOPE_KEYS } from '@solar/api';
 import { solar } from '../solarApi';
 import { Providers } from '../Providers';
-import { Mail, Trash2, RotateCcw, Save, Search } from 'lucide-react';
+import { Trash2, RotateCcw, Save, Search } from 'lucide-react';
 
 // ─── Key Metadata ────────────────────────────────────────────────────────────
 
@@ -159,16 +159,16 @@ function EnvelopeOverrideContent() {
   const setOverrideMutation = useMutation({
     mutationFn: (override: EnvelopeOverride) =>
       solar.saturn.admin.setEnvelopeOverride(loadedPrincipal, override),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['envelope-override', loadedPrincipal] });
       setValidationError(null);
-      toast({ title: 'Saved', description: 'Envelope override updated successfully.', variant: 'success' });
+      toast({ type: 'success', title: 'Saved', description: 'Envelope override updated successfully.' });
     },
     onError: (err: any) => {
       if (err?.status === 422 && err?.body) {
         setValidationError(err.body as EnvelopeOverrideValidationError);
       } else {
-        toast({ title: 'Error', description: err?.message || 'Failed to save override.', variant: 'error' });
+        toast({ type: 'error', title: 'Error', description: err?.message || 'Failed to save override.' });
       }
     },
   });
@@ -178,10 +178,10 @@ function EnvelopeOverrideContent() {
       solar.saturn.admin.deleteEnvelopeKey(loadedPrincipal, key),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['envelope-override', loadedPrincipal] });
-      toast({ title: 'Deleted', description: 'Envelope key removed.', variant: 'success' });
+      toast({ type: 'success', title: 'Deleted', description: 'Envelope key removed.' });
     },
     onError: (err: any) => {
-      toast({ title: 'Error', description: err?.message || 'Failed to delete key.', variant: 'error' });
+      toast({ type: 'error', title: 'Error', description: err?.message || 'Failed to delete key.' });
     },
   });
 
@@ -191,10 +191,10 @@ function EnvelopeOverrideContent() {
       queryClient.invalidateQueries({ queryKey: ['envelope-override', loadedPrincipal] });
       setEditState({});
       setValidationError(null);
-      toast({ title: 'Reset', description: 'Envelope override reset to defaults.', variant: 'success' });
+      toast({ type: 'success', title: 'Reset', description: 'Envelope override reset to defaults.' });
     },
     onError: (err: any) => {
-      toast({ title: 'Error', description: err?.message || 'Failed to reset envelope.', variant: 'error' });
+      toast({ type: 'error', title: 'Error', description: err?.message || 'Failed to reset envelope.' });
     },
   });
 
@@ -239,7 +239,6 @@ function EnvelopeOverrideContent() {
       <PageHeader
         title="Envelope Override"
         description="Manage per-principal envelope overrides (L3 layer). Set, update, or delete override keys."
-        icon={<Mail size={20} />}
       />
 
       {/* Principal Selector */}
@@ -264,19 +263,16 @@ function EnvelopeOverrideContent() {
 
       {/* Validation Errors */}
       {validationError && (
-        <AlertBanner variant="error" title={validationError.error.code}>
-          <p style={{ margin: '0.25rem 0' }}>{validationError.error.message}</p>
-          {validationError.error.violations && validationError.error.violations.length > 0 && (
-            <ul style={{ margin: '0.5rem 0', paddingLeft: '1.25rem', fontSize: '0.8125rem' }}>
-              {validationError.error.violations.map((v, i) => (
-                <li key={i}>
-                  <strong>{v.key}</strong>: attempted <code>{String(v.attempted)}</code>, ceiling{' '}
-                  <code>{String(v.ceiling)}</code>
-                </li>
-              ))}
-            </ul>
-          )}
-        </AlertBanner>
+        <AlertBanner
+          type="error"
+          title={validationError.error.code}
+          description={[
+            validationError.error.message,
+            ...(validationError.error.violations ?? []).map(
+              (v) => `${v.key}: attempted ${String(v.attempted)}, ceiling ${String(v.ceiling)}`
+            ),
+          ].join(' | ')}
+        />
       )}
 
       {/* Loading / Empty state */}
@@ -294,9 +290,11 @@ function EnvelopeOverrideContent() {
       )}
 
       {loadedPrincipal && envelopeQuery.isError && (
-        <AlertBanner variant="error" title="Failed to load envelope">
-          {(envelopeQuery.error as any)?.message || 'Unknown error'}
-        </AlertBanner>
+        <AlertBanner
+          type="error"
+          title="Failed to load envelope"
+          description={(envelopeQuery.error as any)?.message || 'Unknown error'}
+        />
       )}
 
       {/* Envelope Table */}
@@ -395,7 +393,7 @@ function EnvelopeOverrideContent() {
                           {meta.category === 'boolean' && (
                             <Switch
                               checked={value === true}
-                              onCheckedChange={(checked) =>
+                              onChange={(checked: boolean) =>
                                 handleEditValue(meta.key, checked)
                               }
                             />
@@ -432,7 +430,7 @@ function EnvelopeOverrideContent() {
           {/* Action Bar */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
             <Button
-              variant="destructive"
+              variant="danger"
               onClick={() => setShowResetConfirm(true)}
               disabled={resetMutation.isPending}
             >
@@ -453,11 +451,11 @@ function EnvelopeOverrideContent() {
       {/* Reset Confirmation */}
       <ConfirmDialog
         open={showResetConfirm}
-        onOpenChange={setShowResetConfirm}
+        onCancel={() => setShowResetConfirm(false)}
         title="Reset Envelope Override"
         description="This will remove all override keys for this principal and revert to tenant defaults. This action cannot be undone."
         confirmLabel="Reset"
-        variant="destructive"
+        destructive
         onConfirm={() => {
           resetMutation.mutate();
           setShowResetConfirm(false);
