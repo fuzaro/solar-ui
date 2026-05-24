@@ -17,6 +17,7 @@ import {
   Settings,
   HardDrive,
   FileSearch,
+  Receipt,
 } from 'lucide-react';
 
 const queryClient = new QueryClient({
@@ -67,6 +68,12 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Audit',
     icon: <FileSearch size={18} />,
     planet: 'moon',
+  },
+  {
+    href: '/billing',
+    label: 'Billing',
+    icon: <Receipt size={18} />,
+    planet: 'saturn',
   },
 ];
 
