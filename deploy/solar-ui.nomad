@@ -27,6 +27,7 @@ job "solar-ui" {
     network {
       port "http" {
         static = 3080
+        to     = 8080
       }
     }
 
@@ -49,7 +50,6 @@ job "solar-ui" {
       config {
         image        = "localhost:5000/solar-ui:1.0.0"
         ports        = ["http"]
-        network_mode = "host"
       }
 
       # Vault integration — inject backend URLs as build-time env is baked,
