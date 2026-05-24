@@ -22,8 +22,11 @@ import {
   JsonViewer,
   useToast,
 } from '@solar/ui';
-import type { Skill, Resource, TaskSubmitRequest } from '@solar/api';
+import type { Skill, Resource, TaskSubmitRequest, CaixaPayload } from '@solar/api';
+import { parseCaixaPayload } from '@solar/api';
 import { useSolar } from '../useSolar';
+import { Providers } from '../Providers';
+import { BalanceGateError } from './BalanceGateError';
 import {
   ArrowLeft,
   ArrowRight,
@@ -68,6 +71,14 @@ function generateIdempotencyKey(): string {
 }
 
 export function TaskSubmitWizard() {
+  return (
+    <Providers>
+      <TaskSubmitWizardContent />
+    </Providers>
+  );
+}
+
+function TaskSubmitWizardContent() {
   const [step, setStep] = useState(0);
   const [codeMode, setCodeMode] = useState(false);
   const [showJsonPreview, setShowJsonPreview] = useState(false);

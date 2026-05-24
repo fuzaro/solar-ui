@@ -23,6 +23,7 @@ import {
 } from '@solar/ui';
 import type { Resource, PaginatedResponse, ResourceType, ResourceSensitivity } from '@solar/api';
 import { useSolar } from '../useSolar';
+import { Providers } from '../Providers';
 import { Plus, Trash2, Edit, RefreshCw, Search } from 'lucide-react';
 
 const RESOURCE_TYPES: ResourceType[] = ['database', 'api', 'file_storage', 'cloud_storage', 'integration', 'message_queue', 'model', 'internal_service', 'rag_index', 'mcp_server', 'function'];
@@ -42,6 +43,14 @@ const resourceSchema = z.object({
 type ResourceFormData = z.infer<typeof resourceSchema>;
 
 export function ResourcesPage() {
+  return (
+    <Providers>
+      <ResourcesPageContent />
+    </Providers>
+  );
+}
+
+function ResourcesPageContent() {
   const [showCreate, setShowCreate] = useState(false);
   const [editTarget, setEditTarget] = useState<Resource | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);

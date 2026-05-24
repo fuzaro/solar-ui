@@ -24,6 +24,7 @@ import {
 import type { ApiKey, PaginatedResponse } from '@solar/api';
 import { useSolar } from '../useSolar';
 import { useAuth } from '@solar/auth';
+import { Providers } from '../Providers';
 import { Plus, Copy, AlertTriangle, KeyRound } from 'lucide-react';
 
 const createKeySchema = z.object({
@@ -35,6 +36,14 @@ const createKeySchema = z.object({
 type CreateKeyForm = z.infer<typeof createKeySchema>;
 
 export function ApiKeysPage() {
+  return (
+    <Providers>
+      <ApiKeysPageContent />
+    </Providers>
+  );
+}
+
+function ApiKeysPageContent() {
   const [showCreate, setShowCreate] = useState(false);
   const [newKeyValue, setNewKeyValue] = useState<string | null>(null);
   const [revokeTarget, setRevokeTarget] = useState<string | null>(null);

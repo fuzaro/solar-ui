@@ -20,6 +20,7 @@ import {
 } from '@solar/api';
 import { useAuth } from '@solar/auth';
 import { getSession } from '@solar/auth';
+import { Providers } from './Providers';
 import { CheckCircle, Clock, AlertTriangle, Layers, Zap, ArrowRight } from 'lucide-react';
 
 const solar = createSolarClients({
@@ -42,6 +43,14 @@ function getGreeting(): string {
 }
 
 export function ConsoleDashboard() {
+  return (
+    <Providers>
+      <ConsoleDashboardContent />
+    </Providers>
+  );
+}
+
+function ConsoleDashboardContent() {
   const { session } = useAuth();
   const displayName = session?.displayName || 'there';
 

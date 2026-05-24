@@ -18,9 +18,18 @@ import {
 } from '@solar/ui';
 import type { AuditRecord, PaginatedResponse, PlanetId } from '@solar/api';
 import { useSolar } from '../useSolar';
+import { Providers } from '../Providers';
 import { Search, Filter, Link2, Shield } from 'lucide-react';
 
 export function AuditPage() {
+  return (
+    <Providers>
+      <AuditPageContent />
+    </Providers>
+  );
+}
+
+function AuditPageContent() {
   const [page, setPage] = useState(1);
   const [eventFilter, setEventFilter] = useState('');
   const [taskSearch, setTaskSearch] = useState('');

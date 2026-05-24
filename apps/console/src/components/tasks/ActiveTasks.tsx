@@ -15,7 +15,9 @@ import {
   useToast,
 } from '@solar/ui';
 import type { Task, PaginatedResponse } from '@solar/api';
+import { SolarApiError } from '@solar/api';
 import { useSolar } from '../useSolar';
+import { Providers } from '../Providers';
 import { Clock, LayoutGrid, List, X, Play, RefreshCw } from 'lucide-react';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -36,6 +38,14 @@ function formatElapsed(createdAt: string): string {
 }
 
 export function ActiveTasks() {
+  return (
+    <Providers>
+      <ActiveTasksContent />
+    </Providers>
+  );
+}
+
+function ActiveTasksContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
   const solar = useSolar();
@@ -97,9 +107,29 @@ export function ActiveTasks() {
 
       {error && (
         <AlertBanner
-          type="warning"
-          title="Could not load active tasks"
-          description="The Venus API is unreachable. Auto-retry in 3 seconds."
+          type={error instanceof SolarApiError && error.error.status === 402 ? 'error' : 'warning'}
+          title={
+            error instanceof SolarApiError && error.error.status === 402
+              ? 'Insufficient Balance'
+              : 'Could not load active tasks'
+          }
+          description={
+            error instanceof SolarApiError && error.error.status === 402
+              ? 'Your tenant has insufficient balance to fetch tasks. Please recharge your account.'
+              : error instanceof SolarApiError && error.error.status === 429
+                ? 'Rate limited — too many requests. Auto-retry in 3 seconds.'
+                : 'The Venus API is unreachable. Auto-retry in 3 seconds.'
+          }
+          actions={
+            <>
+              {error instanceof SolarApiError && error.error.status === 402 && (
+                <Badge variant="warning">Insufficient Balance</Badge>
+              )}
+              {error instanceof SolarApiError && error.error.status === 429 && (
+                <Badge variant="default">Rate Limited</Badge>
+              )}
+            </>
+          }
           dismissible
         />
       )}

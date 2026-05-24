@@ -17,6 +17,7 @@ import {
 } from '@solar/ui';
 import type { Task, PaginatedResponse, TaskStatus } from '@solar/api';
 import { useSolar } from '../useSolar';
+import { Providers } from '../Providers';
 import { RefreshCw, Play, Filter } from 'lucide-react';
 
 const STATUS_VARIANT: Record<TaskStatus, string> = {
@@ -29,6 +30,14 @@ const STATUS_VARIANT: Record<TaskStatus, string> = {
 };
 
 export function TaskHistory() {
+  return (
+    <Providers>
+      <TaskHistoryContent />
+    </Providers>
+  );
+}
+
+function TaskHistoryContent() {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('created_at');

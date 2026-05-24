@@ -13,6 +13,7 @@ import {
   useToast,
 } from '@solar/ui';
 import { useAuth } from '@solar/auth';
+import { Providers } from '../Providers';
 import { User, Mail, Shield, Building2, Save } from 'lucide-react';
 
 const profileSchema = z.object({
@@ -23,6 +24,14 @@ const profileSchema = z.object({
 type ProfileForm = z.infer<typeof profileSchema>;
 
 export function ProfilePage() {
+  return (
+    <Providers>
+      <ProfilePageContent />
+    </Providers>
+  );
+}
+
+function ProfilePageContent() {
   const { session } = useAuth();
   const { addToast } = useToast();
 

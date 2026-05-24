@@ -19,6 +19,7 @@ import {
 import type { BudgetLedgerEntry, PaginatedResponse } from '@solar/api';
 import { useSolar } from '../useSolar';
 import { useAuth } from '@solar/auth';
+import { Providers } from '../Providers';
 import { CreditCard, TrendingUp, TrendingDown, DollarSign, Zap } from 'lucide-react';
 
 function generateUsageData(): { day: string; amount: number }[] {
@@ -75,6 +76,14 @@ function UsageChart({ data }: { data: { day: string; amount: number }[] }) {
 }
 
 export function BillingPage() {
+  return (
+    <Providers>
+      <BillingPageContent />
+    </Providers>
+  );
+}
+
+function BillingPageContent() {
   const [showAcquire, setShowAcquire] = useState(false);
   const solar = useSolar();
   const { session } = useAuth();

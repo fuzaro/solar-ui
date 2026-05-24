@@ -17,6 +17,7 @@ import {
 } from '@solar/ui';
 import type { Task, ToolCall, QualityGateResult, ExecutionStep } from '@solar/api';
 import { useSolar } from '../useSolar';
+import { Providers } from '../Providers';
 import {
   Clock,
   CheckCircle,
@@ -52,6 +53,14 @@ interface TaskDetailProps {
 }
 
 export function TaskDetail({ taskId }: TaskDetailProps) {
+  return (
+    <Providers>
+      <TaskDetailContent taskId={taskId} />
+    </Providers>
+  );
+}
+
+function TaskDetailContent({ taskId }: TaskDetailProps) {
   const solar = useSolar();
 
   const { data: task, isLoading, error } = useQuery<Task>({
