@@ -1,6 +1,6 @@
 import type { ApiClientOptions } from '../client';
-import { apiRequest } from '../client';
-import type { Task, TaskSubmitRequest, HealthResponse, PaginatedResponse, TaskStatus } from '../types';
+import { apiRequest, SolarApiError } from '../client';
+import type { CaixaPayload, Task, TaskSubmitRequest, HealthResponse, PaginatedResponse, TaskStatus } from '../types';
 
 export interface VenusClientOptions extends ApiClientOptions {}
 
@@ -12,6 +12,14 @@ export function createVenusClient(opts: VenusClientOptions) {
     health: () => req<HealthResponse>('GET', '/health'),
 
     tasks: {
+      /**
+       * Submit a task.
+       *
+       * May throw `SolarApiError` with `error.status === 402` when the
+       * Balance Gate (G2) rejects the request.  In that case the
+       * `error.detail` field contains a {@link CaixaPayload} body with
+       * balance info and an optional recharge URL.
+       */
       submit: (data: TaskSubmitRequest) =>
         req<Task>('POST', '/v1/tasks', data),
 
@@ -36,3 +44,14 @@ export function createVenusClient(opts: VenusClientOptions) {
 }
 
 export type VenusClient = ReturnType<typeof createVenusClient>;
+
+/**
+ * Type-guard: returns the {@link CaixaPayload} when a `SolarApiError`
+ * originated from Balance Gate (HTTP 402), or `null` otherwise.
+ */
+export function parseCaixaPayload(err: unknown): CaixaPayload | null {
+  if (err instanceof SolarApiError && err.error.status === 402) {
+    return (err.error.detail ?? null) as CaixaPayload | null;
+  }
+  return null;
+}

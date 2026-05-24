@@ -1,7 +1,7 @@
 export * from './types';
 export * from './client';
 
-import { createVenusClient } from './services/venus';
+import { createVenusClient, parseCaixaPayload } from './services/venus';
 import { createSaturnClient } from './services/saturn';
 import { createNeptuneClient } from './services/neptune';
 import { createSunClient } from './services/sun';
@@ -10,7 +10,7 @@ import { createPlutoClient } from './services/pluto';
 import { createThemisClient } from './services/themis';
 import { createMarsClient } from './services/mars';
 
-export { createVenusClient, createSaturnClient, createNeptuneClient, createSunClient, createMoonClient, createPlutoClient, createThemisClient, createMarsClient };
+export { createVenusClient, parseCaixaPayload, createSaturnClient, createNeptuneClient, createSunClient, createMoonClient, createPlutoClient, createThemisClient, createMarsClient };
 
 // ─── Convenience factory ─────────────────────────────────────
 
