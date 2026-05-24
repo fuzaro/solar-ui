@@ -19,6 +19,13 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /app/apps/console/dist /srv/console
 COPY --from=builder /app/apps/control/dist /srv/control
 COPY --from=builder /app/apps/engineering/dist /srv/engineering
+
+# Merge all _astro assets into shared dir (unique hashes = no conflicts)
+RUN mkdir -p /srv/shared_astro && \
+    cp -r /srv/console/_astro/* /srv/shared_astro/ 2>/dev/null || true && \
+    cp -r /srv/control/_astro/* /srv/shared_astro/ 2>/dev/null || true && \
+    cp -r /srv/engineering/_astro/* /srv/shared_astro/ 2>/dev/null || true
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 EXPOSE 8080

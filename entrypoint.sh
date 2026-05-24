@@ -1,4 +1,5 @@
 #!/bin/sh
+# Generate runtime config from Vault-injected env vars
 cat > /srv/__config.js << EOF
 window.__SOLAR_CONFIG = {
   VENUS_URL: "${PUBLIC_VENUS_URL:-http://localhost:8000}",
@@ -12,4 +13,10 @@ window.__SOLAR_CONFIG = {
   MERCURY_URL: "${PUBLIC_MERCURY_URL:-http://localhost:8005}"
 };
 EOF
+
+# Inject config script into all HTML files
+for dir in /srv/console /srv/control /srv/engineering; do
+  find "$dir" -name "*.html" -exec sed -i 's|</head>|<script src="/__config.js"></script></head>|' {} \;
+done
+
 exec nginx -g 'daemon off;'
