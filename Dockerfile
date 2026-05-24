@@ -1,10 +1,16 @@
 # Stage 1: Build
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Match packageManager field declared in package.json
+RUN npm install -g npm@11.14.1
+
 COPY package.json package-lock.json turbo.json tsconfig.base.json ./
 COPY packages/ packages/
 COPY apps/ apps/
 RUN npm install --legacy-peer-deps
+
+ENV TURBO_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # Stage 2: Serve
