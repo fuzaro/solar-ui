@@ -332,3 +332,99 @@ export interface AuthValidateResponse {
   plan: string;
   expires_at: string;
 }
+
+// ─── ADR-010: Principal Envelope Override (L3) ─────────────────────────────────
+
+export interface EnvelopeOverride {
+  // Numeric keys (ceiling; intent-only until C5)
+  max_budget_usd_per_task?: number;
+  max_duration_seconds?: number;
+  max_concurrent_per_principal?: number;
+  max_batch_children?: number;
+  // Boolean keys (permission; intent-only until C5)
+  tool_calling?: boolean;
+  agent_call_batch_parent?: boolean;
+  agent_call_child?: boolean;
+  session_mode?: boolean;
+  // List keys (enforced now via Venus capability)
+  allowed_call_types?: string[];
+  allowed_lifecycle_types?: string[];
+  allowed_skill_patterns?: string[];
+  model_class_hints?: string[];
+}
+
+/** Keys currently enforced at Venus capability check (ADR-010 Phase 2) */
+export const ENFORCED_ENVELOPE_KEYS: (keyof EnvelopeOverride)[] = [
+  'allowed_skill_patterns',
+  'allowed_call_types',
+  'allowed_lifecycle_types',
+];
+
+// ─── ADR-015: Balance Gate (G2) ────────────────────────────────────────────────
+
+export type BalanceGateErrorCode = 'BALANCE_INSUFFICIENT' | 'ORPHAN_TENANT_NO_RECHARGE';
+
+export interface CaixaPayload {
+  error: {
+    code: BalanceGateErrorCode;
+    message: string;
+    gate: 'G2';
+    phase: number;
+  };
+  balance: {
+    budget_remaining: number | null;
+    currency: 'USD';
+    as_of: string;
+  };
+  recharge: { url: string } | null;
+  tenant_id: string;
+  request_id: string;
+}
+
+// ─── ADR-010: Envelope Override Validation Error (422) ──────────────────────────
+
+export interface EnvelopeOverrideViolation {
+  key: string;
+  attempted: number | string | boolean;
+  ceiling: number | string | boolean;
+}
+
+export interface EnvelopeOverrideValidationError {
+  error: {
+    code: 'ENVELOPE_OVERRIDE_EXCEEDS_TENANT' | 'TIER_NOT_DEFINED' | 'UNKNOWN_ENVELOPE_KEY' | 'INVALID_ENVELOPE_VALUE';
+    message: string;
+    violations?: EnvelopeOverrideViolation[];
+  };
+  principal_id: string;
+  tenant_id: string;
+}
+
+// ─── ADR-013: FGA Skill Grants ─────────────────────────────────────────────────
+
+export interface SkillGrantResponse {
+  granted: boolean;
+  principal_id: string;
+  skill_id: string;
+}
+
+export interface FgaBackfillResponse {
+  principals: number;
+  grants: number;
+}
+
+// ─── ADR-008: Orphan Reconciliation ────────────────────────────────────────────
+
+export interface ReconcileOrphanRequest {
+  original_tenant_id: string;
+  target_tenant_id: string;
+  since_ts?: string;
+  dry_run: boolean;
+}
+
+export interface ReconcileOrphanResponse {
+  matched_debits: number;
+  total_amount_usd: number;
+  dry_run: boolean;
+  ledger_ids: string[];
+  reconciliation_ref?: string;
+}
