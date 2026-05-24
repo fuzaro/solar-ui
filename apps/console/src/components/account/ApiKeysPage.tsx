@@ -22,6 +22,7 @@ import {
   type ColumnDef,
 } from '@solar/ui';
 import type { ApiKey, PaginatedResponse } from '@solar/api';
+import { getSolarConfig } from '@solar/api';
 import { useSolar } from '../useSolar';
 import { useAuth } from '@solar/auth';
 import { Providers } from '../Providers';
@@ -63,7 +64,7 @@ function ApiKeysPageContent() {
       const expiresAt = data.expires_in === 'never' ? null :
         new Date(Date.now() + parseInt(data.expires_in) * 24 * 60 * 60 * 1000).toISOString();
       const response = await fetch(
-        `${import.meta.env.PUBLIC_SATURN_URL ?? 'http://localhost:8006'}/v1/api-keys`,
+        `${getSolarConfig().saturn}/v1/api-keys`,
         {
           method: 'POST',
           headers: {
@@ -93,7 +94,7 @@ function ApiKeysPageContent() {
   const revokeMutation = useMutation({
     mutationFn: async (keyId: string) => {
       const response = await fetch(
-        `${import.meta.env.PUBLIC_SATURN_URL ?? 'http://localhost:8006'}/v1/api-keys/${keyId}/revoke`,
+        `${getSolarConfig().saturn}/v1/api-keys/${keyId}/revoke`,
         {
           method: 'POST',
           headers: { Authorization: `Bearer ${session?.token}` },

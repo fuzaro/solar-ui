@@ -19,5 +19,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /app/apps/console/dist /srv/console
 COPY --from=builder /app/apps/control/dist /srv/control
 COPY --from=builder /app/apps/engineering/dist /srv/engineering
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/entrypoint.sh"]

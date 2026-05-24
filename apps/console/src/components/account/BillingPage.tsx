@@ -17,6 +17,7 @@ import {
   type ColumnDef,
 } from '@solar/ui';
 import type { BudgetLedgerEntry, PaginatedResponse } from '@solar/api';
+import { getSolarConfig } from '@solar/api';
 import { useSolar } from '../useSolar';
 import { useAuth } from '@solar/auth';
 import { Providers } from '../Providers';
@@ -93,7 +94,7 @@ function BillingPageContent() {
     queryKey: ['billing', 'ledger'],
     queryFn: async () => {
       const response = await fetch(
-        `${import.meta.env.PUBLIC_SATURN_URL ?? 'http://localhost:8006'}/v1/budget/ledger?page=1&page_size=20`,
+        `${getSolarConfig().saturn}/v1/budget/ledger?page=1&page_size=20`,
         { headers: { Authorization: `Bearer ${session?.token}` } }
       );
       if (!response.ok) throw new Error('Failed to load ledger');

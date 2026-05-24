@@ -1,5 +1,6 @@
 export * from './types';
 export * from './client';
+export { getSolarConfig } from './config';
 
 import { createVenusClient, parseCaixaPayload } from './services/venus';
 import { createSaturnClient } from './services/saturn';

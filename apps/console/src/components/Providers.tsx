@@ -3,6 +3,7 @@
 import { type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@solar/auth';
+import { getSolarConfig } from '@solar/api';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,7 +18,7 @@ const queryClient = new QueryClient({
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider saturnUrl={import.meta.env.PUBLIC_SATURN_URL ?? 'http://localhost:8006'}>
+      <AuthProvider saturnUrl={getSolarConfig().saturn}>
         {children}
       </AuthProvider>
     </QueryClientProvider>

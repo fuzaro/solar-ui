@@ -9,6 +9,7 @@ import {
   type NavItem,
 } from '@solar/ui';
 import { AuthProvider } from '@solar/auth';
+import { getSolarConfig } from '@solar/api';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient({
@@ -84,7 +85,7 @@ export function ConsoleShell({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider saturnUrl={import.meta.env.PUBLIC_SATURN_URL ?? 'http://localhost:8006'}>
+      <AuthProvider saturnUrl={getSolarConfig().saturn}>
         <ToastProvider>
           <AppShell
             sidebar={
