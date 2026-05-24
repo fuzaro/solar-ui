@@ -1,0 +1,7 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { TaskDetailRouter } from '../../components/tasks/TaskDetailRouter.tsx';
+---
+<AppLayout title="Task Detail">
+  <TaskDetailRouter client:only="react" />
+</AppLayout>

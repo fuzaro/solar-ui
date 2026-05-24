@@ -75,7 +75,7 @@ function AuditPageContent() {
         if (!v) return <span style={{ color: 'var(--color-solar-text-secondary)', fontSize: '0.75rem' }}>—</span>;
         return (
           <a
-            href={`/tasks/${v}`}
+            href={`/tasks/detail?id=${v}`}
             style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--color-solar-accent)', textDecoration: 'none' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -182,7 +182,7 @@ function AuditPageContent() {
             <DetailRow label="Planet Source" value={selectedRecord.planet_source} />
             <DetailRow label="Principal" value={selectedRecord.principal_id} mono />
             <DetailRow label="Tenant" value={selectedRecord.tenant_id} mono />
-            {selectedRecord.task_id && <DetailRow label="Task ID" value={selectedRecord.task_id} mono link={`/tasks/${selectedRecord.task_id}`} />}
+            {selectedRecord.task_id && <DetailRow label="Task ID" value={selectedRecord.task_id} mono link={`/tasks/detail?id=${selectedRecord.task_id}`} />}
             <DetailRow label="Timestamp" value={new Date(selectedRecord.created_at).toLocaleString()} />
 
             <div style={{ borderTop: '1px solid var(--color-solar-border)', paddingTop: '1rem' }}>

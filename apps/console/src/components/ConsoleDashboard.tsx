@@ -194,7 +194,7 @@ function ConsoleDashboardContent() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {running.slice(0, 3).map((task) => (
-              <a key={task.task_id} href={`/tasks/${task.task_id}`} style={{ textDecoration: 'none' }}>
+              <a key={task.task_id} href={`/tasks/detail?id=${task.task_id}`} style={{ textDecoration: 'none' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-solar-border)', transition: 'border-color 0.15s' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--color-solar-text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -240,7 +240,7 @@ function ConsoleDashboardContent() {
             columns={RECENT_COLUMNS}
             data={recentCompleted}
             emptyMessage="No completed tasks yet. Submit your first task to get started."
-            onRowClick={(row) => { window.location.href = `/tasks/${row.task_id}`; }}
+            onRowClick={(row) => { window.location.href = `/tasks/detail?id=${row.task_id}`; }}
           />
         )}
       </div>

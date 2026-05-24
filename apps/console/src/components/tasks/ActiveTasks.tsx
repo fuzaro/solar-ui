@@ -152,7 +152,7 @@ function ActiveTasksContent() {
 function TaskCard({ task, onCancel }: { task: Task; onCancel: () => void }) {
   return (
     <a
-      href={`/tasks/${task.task_id}`}
+      href={`/tasks/detail?id=${task.task_id}`}
       style={{ textDecoration: 'none', display: 'block' }}
     >
       <div
@@ -209,7 +209,7 @@ function TaskCard({ task, onCancel }: { task: Task; onCancel: () => void }) {
 
 function TaskRow({ task, onCancel }: { task: Task; onCancel: () => void }) {
   return (
-    <a href={`/tasks/${task.task_id}`} style={{ textDecoration: 'none' }}>
+    <a href={`/tasks/detail?id=${task.task_id}`} style={{ textDecoration: 'none' }}>
       <div
         style={{
           background: 'var(--color-solar-card)',

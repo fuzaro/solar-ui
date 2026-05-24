@@ -217,7 +217,7 @@ function TaskHistoryContent() {
           columns={columns}
           data={tasks}
           emptyMessage="No tasks found matching your filters."
-          onRowClick={(row) => { window.location.href = `/tasks/${row.task_id}`; }}
+          onRowClick={(row) => { window.location.href = `/tasks/detail?id=${row.task_id}`; }}
           pagination={data ? { page: data.page, pageSize: data.page_size, total: data.total } : undefined}
           onPageChange={setPage}
         />
