@@ -62,3 +62,8 @@ logs:
 
 .PHONY: restart
 restart: stop deploy
+
+.PHONY: vault-setup
+vault-setup:
+	@echo ">>> Configuring Vault for solar-ui (requires VAULT_TOKEN) ..."
+	bash deploy/vault/setup.sh
