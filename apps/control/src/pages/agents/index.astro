@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { AgentRegistry } from '../../components/agents/AgentRegistry.tsx';
 ---
 <AppLayout title="Agents">
-  <AgentRegistry client:load />
+  <AgentRegistry client:only="react" />
 </AppLayout>

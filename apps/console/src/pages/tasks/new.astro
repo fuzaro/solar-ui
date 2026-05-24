@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { TaskSubmitWizard } from '../../components/tasks/TaskSubmitWizard.tsx';
 ---
 <AppLayout title="New Task">
-  <TaskSubmitWizard client:load />
+  <TaskSubmitWizard client:only="react" />
 </AppLayout>

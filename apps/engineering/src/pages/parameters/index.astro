@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { ParameterEditor } from '../../components/parameters/ParameterEditor.tsx';
 ---
 <AppLayout title="Parameters">
-  <ParameterEditor client:load />
+  <ParameterEditor client:only="react" />
 </AppLayout>

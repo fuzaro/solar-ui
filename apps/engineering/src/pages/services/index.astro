@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { ServiceDetail } from '../../components/services/ServiceDetail.tsx';
 ---
 <AppLayout title="Services">
-  <ServiceDetail client:load />
+  <ServiceDetail client:only="react" />
 </AppLayout>

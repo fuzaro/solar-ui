@@ -3,5 +3,5 @@ import AppLayout from '../layouts/AppLayout.astro';
 import { EngineeringTopology } from '../components/EngineeringTopology.tsx';
 ---
 <AppLayout title="Topology">
-  <EngineeringTopology client:load />
+  <EngineeringTopology client:only="react" />
 </AppLayout>

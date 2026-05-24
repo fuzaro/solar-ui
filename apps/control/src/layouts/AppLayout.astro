@@ -9,7 +9,7 @@ const { title = 'Control Plane' } = Astro.props;
 const pathname = Astro.url.pathname;
 ---
 <BaseLayout title={title}>
-  <ControlShell activeHref={pathname} title={title} client:load>
+  <ControlShell activeHref={pathname} title={title} client:only="react">
     <slot />
   </ControlShell>
 </BaseLayout>

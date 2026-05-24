@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { AuditPage } from '../../components/audit/AuditPage.tsx';
 ---
 <AppLayout title="Audit Trail">
-  <AuditPage client:load />
+  <AuditPage client:only="react" />
 </AppLayout>

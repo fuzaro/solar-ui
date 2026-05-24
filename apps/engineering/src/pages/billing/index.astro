@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { OrphanReconciliation } from '../../components/billing/OrphanReconciliation.tsx';
 ---
 <AppLayout title="Billing">
-  <OrphanReconciliation client:load />
+  <OrphanReconciliation client:only="react" />
 </AppLayout>

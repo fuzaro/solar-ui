@@ -5,5 +5,5 @@ import { TaskDetail } from '../../components/tasks/TaskDetail.tsx';
 const { id } = Astro.params;
 ---
 <AppLayout title="Task Detail">
-  <TaskDetail taskId={id!} client:load />
+  <TaskDetail taskId={id!} client:only="react" />
 </AppLayout>

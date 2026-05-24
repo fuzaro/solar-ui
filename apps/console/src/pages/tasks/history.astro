@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { TaskHistory } from '../../components/tasks/TaskHistory.tsx';
 ---
 <AppLayout title="Task History">
-  <TaskHistory client:load />
+  <TaskHistory client:only="react" />
 </AppLayout>

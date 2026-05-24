@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { ProfilePage } from '../../components/account/ProfilePage.tsx';
 ---
 <AppLayout title="Account">
-  <ProfilePage client:load />
+  <ProfilePage client:only="react" />
 </AppLayout>

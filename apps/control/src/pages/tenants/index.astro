@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { TenantList } from '../../components/tenants/TenantList.tsx';
 ---
 <AppLayout title="Tenants & Users">
-  <TenantList client:load />
+  <TenantList client:only="react" />
 </AppLayout>

@@ -9,7 +9,7 @@ const { title = 'Console' } = Astro.props;
 const pathname = Astro.url.pathname;
 ---
 <BaseLayout title={title}>
-  <ConsoleShell activeHref={pathname} title={title} client:load>
+  <ConsoleShell activeHref={pathname} title={title} client:only="react">
     <slot />
   </ConsoleShell>
 </BaseLayout>

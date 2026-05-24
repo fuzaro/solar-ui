@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { InfrastructurePage } from '../../components/infrastructure/InfrastructurePage.tsx';
 ---
 <AppLayout title="Infrastructure">
-  <InfrastructurePage client:load />
+  <InfrastructurePage client:only="react" />
 </AppLayout>

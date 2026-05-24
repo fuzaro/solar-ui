@@ -107,29 +107,9 @@ function ActiveTasksContent() {
 
       {error && (
         <AlertBanner
-          type={error instanceof SolarApiError && error.error.status === 402 ? 'error' : 'warning'}
-          title={
-            error instanceof SolarApiError && error.error.status === 402
-              ? 'Insufficient Balance'
-              : 'Could not load active tasks'
-          }
-          description={
-            error instanceof SolarApiError && error.error.status === 402
-              ? 'Your tenant has insufficient balance to fetch tasks. Please recharge your account.'
-              : error instanceof SolarApiError && error.error.status === 429
-                ? 'Rate limited — too many requests. Auto-retry in 3 seconds.'
-                : 'The Venus API is unreachable. Auto-retry in 3 seconds.'
-          }
-          actions={
-            <>
-              {error instanceof SolarApiError && error.error.status === 402 && (
-                <Badge variant="warning">Insufficient Balance</Badge>
-              )}
-              {error instanceof SolarApiError && error.error.status === 429 && (
-                <Badge variant="default">Rate Limited</Badge>
-              )}
-            </>
-          }
+          type="warning"
+          title="Could not load active tasks"
+          description="The Venus API is unreachable. Auto-retry in 3 seconds."
           dismissible
         />
       )}

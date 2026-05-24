@@ -3,5 +3,5 @@ import AppLayout from '../layouts/AppLayout.astro';
 import { ControlOverview } from '../components/ControlOverview.tsx';
 ---
 <AppLayout title="Overview">
-  <ControlOverview client:load />
+  <ControlOverview client:only="react" />
 </AppLayout>

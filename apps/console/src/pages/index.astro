@@ -3,5 +3,5 @@ import AppLayout from '../layouts/AppLayout.astro';
 import { ConsoleDashboard } from '../components/ConsoleDashboard.tsx';
 ---
 <AppLayout title="Dashboard">
-  <ConsoleDashboard client:load />
+  <ConsoleDashboard client:only="react" />
 </AppLayout>

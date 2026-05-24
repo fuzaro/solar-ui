@@ -3,5 +3,5 @@ import AppLayout from '../../layouts/AppLayout.astro';
 import { ProviderList } from '../../components/models/ProviderList.tsx';
 ---
 <AppLayout title="Models & Inference">
-  <ProviderList client:load />
+  <ProviderList client:only="react" />
 </AppLayout>
