@@ -13,6 +13,7 @@ import {
 } from '@solar/ui';
 import type { ShadowRecommendation } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Gavel, Eye, BarChart3, CheckCircle, XCircle } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -98,6 +99,14 @@ const REPUTATION_COLUMNS: ColumnDef<ReputationEntry>[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function ThemisShadow() {
+  return (
+    <Providers>
+      <ThemisShadowContent />
+    </Providers>
+  );
+}
+
+function ThemisShadowContent() {
   const { data: recommendations, isLoading } = useQuery<ShadowRecommendation[]>({
     queryKey: ['themis', 'shadow', 'list'],
     queryFn: () => solar.themis.shadow.list({ page: 1, page_size: 50 }),

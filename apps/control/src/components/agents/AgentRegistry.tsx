@@ -23,6 +23,7 @@ import {
 } from '@solar/ui';
 import type { Agent, PaginatedResponse, RegisterAgentRequest } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Bot, Plus, Search, Filter } from 'lucide-react';
 
 // ─── Validation Schema ────────────────────────────────────────────────────────
@@ -124,6 +125,14 @@ const COLUMNS: ColumnDef<Agent>[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function AgentRegistry() {
+  return (
+    <Providers>
+      <AgentRegistryContent />
+    </Providers>
+  );
+}
+
+function AgentRegistryContent() {
   const [showRegister, setShowRegister] = useState(false);
   const [filterTier, setFilterTier] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('');

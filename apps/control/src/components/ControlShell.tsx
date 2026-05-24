@@ -25,6 +25,7 @@ import {
   Shield,
   Target,
   Clock,
+  Mail,
 } from 'lucide-react';
 
 const queryClient = new QueryClient({
@@ -45,6 +46,12 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Agents',
     icon: <Bot size={18} />,
     planet: 'mars',
+  },
+  {
+    href: '/envelope',
+    label: 'Envelope',
+    icon: <Mail size={18} />,
+    planet: 'saturn',
   },
   {
     href: '/models',

@@ -21,6 +21,7 @@ import {
 } from '@solar/ui';
 import type { Model, PaginatedResponse } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Cpu, Plus, Search, Star } from 'lucide-react';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
@@ -115,6 +116,14 @@ const COLUMNS: ColumnDef<Model>[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function ModelRegistry() {
+  return (
+    <Providers>
+      <ModelRegistryContent />
+    </Providers>
+  );
+}
+
+function ModelRegistryContent() {
   const [showRegister, setShowRegister] = useState(false);
   const [filterTier, setFilterTier] = useState('');
   const [filterProvider, setFilterProvider] = useState('');

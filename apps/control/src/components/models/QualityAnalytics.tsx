@@ -12,6 +12,7 @@ import {
 } from '@solar/ui';
 import type { ModelQuality } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { BarChart3, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
 
 // ─── SVG Bar Chart ────────────────────────────────────────────────────────────
@@ -96,6 +97,14 @@ const QUALITY_COLUMNS: ColumnDef<ModelQuality>[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function QualityAnalytics() {
+  return (
+    <Providers>
+      <QualityAnalyticsContent />
+    </Providers>
+  );
+}
+
+function QualityAnalyticsContent() {
   const { data: qualities, isLoading } = useQuery<ModelQuality[]>({
     queryKey: ['models', 'quality', 'all'],
     queryFn: () => solar.neptune.models.listQuality(),

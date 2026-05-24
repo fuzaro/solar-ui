@@ -23,7 +23,9 @@ import {
 } from '@solar/ui';
 import type { Skill, Agent, PaginatedResponse } from '@solar/api';
 import { solar } from '../solarApi';
-import { Wrench, Plus, Search, Edit, Trash2 } from 'lucide-react';
+import { Providers } from '../Providers';
+import { Wrench, Plus, Search, Edit, Trash2, Shield } from 'lucide-react';
+import { SkillAccessMatrix } from './SkillAccessMatrix';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -100,8 +102,17 @@ const COLUMNS: ColumnDef<Skill>[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function SkillCatalog() {
+  return (
+    <Providers>
+      <SkillCatalogContent />
+    </Providers>
+  );
+}
+
+function SkillCatalogContent() {
   const [showRegister, setShowRegister] = useState(false);
   const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'access'>('catalog');
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -150,56 +161,103 @@ export function SkillCatalog() {
         }
       />
 
-      {/* Search */}
-      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-        <div style={{ position: 'relative', flex: '1', maxWidth: '400px' }}>
-          <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-solar-text-secondary)' }} />
-          <Input placeholder="Search skills..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ paddingLeft: '2rem' }} />
-        </div>
-        <span style={{ fontSize: '0.8125rem', color: 'var(--color-solar-text-secondary)' }}>
-          {filtered.length} skill{filtered.length !== 1 ? 's' : ''} registered
-        </span>
+      {/* Tab Navigation */}
+      <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid var(--color-solar-border)' }}>
+        <button
+          onClick={() => setActiveTab('catalog')}
+          style={{
+            padding: '0.5rem 1rem',
+            fontSize: '0.8125rem',
+            fontWeight: 500,
+            color: activeTab === 'catalog' ? 'var(--color-solar-text-primary)' : 'var(--color-solar-text-secondary)',
+            background: 'transparent',
+            border: 'none',
+            borderBottom: activeTab === 'catalog' ? '2px solid var(--color-planet-sun)' : '2px solid transparent',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.375rem',
+          }}
+        >
+          <Wrench size={14} /> Catalog
+        </button>
+        <button
+          onClick={() => setActiveTab('access')}
+          style={{
+            padding: '0.5rem 1rem',
+            fontSize: '0.8125rem',
+            fontWeight: 500,
+            color: activeTab === 'access' ? 'var(--color-solar-text-primary)' : 'var(--color-solar-text-secondary)',
+            background: 'transparent',
+            border: 'none',
+            borderBottom: activeTab === 'access' ? '2px solid var(--color-planet-saturn)' : '2px solid transparent',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.375rem',
+          }}
+        >
+          <Shield size={14} /> Access Control
+        </button>
       </div>
 
-      {/* Grid view */}
-      {isLoading ? (
-        <Skeleton lines={8} height="40px" />
-      ) : filtered.length === 0 ? (
-        <Card>
-          <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-solar-text-secondary)' }}>
-            No skills registered yet. Create your first skill to get started.
-          </div>
-        </Card>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1rem' }}>
-          {filtered.map(skill => (
-            <div key={skill.skill_id} style={{ background: 'var(--color-solar-card)', border: '1px solid var(--color-solar-border)', borderRadius: 'var(--radius-lg)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Wrench size={16} style={{ color: 'var(--color-planet-sun)' }} />
-                  <span style={{ fontWeight: 600, color: 'var(--color-solar-text-primary)' }}>{skill.display_name}</span>
-                </div>
-                <Badge variant="default">v{skill.version}</Badge>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--color-solar-text-secondary)', lineHeight: 1.4 }}>{skill.description}</p>
-              <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                {skill.tool_groups.map(g => (
-                  <span key={g} style={{ background: 'var(--color-solar-surface)', border: '1px solid var(--color-solar-border)', borderRadius: '4px', padding: '0.125rem 0.5rem', fontSize: '0.6875rem', color: 'var(--color-solar-text-secondary)' }}>{g}</span>
-                ))}
-              </div>
-              <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                {skill.compatible_tiers.map(t => <Badge key={t} variant="info">{t}</Badge>)}
-              </div>
-              {agentUsage[skill.skill_id] && (
-                <div style={{ borderTop: '1px solid var(--color-solar-border)', paddingTop: '0.5rem', marginTop: '0.25rem' }}>
-                  <span style={{ fontSize: '0.6875rem', color: 'var(--color-solar-text-secondary)' }}>
-                    Used by: {agentUsage[skill.skill_id].slice(0, 3).join(', ')}{agentUsage[skill.skill_id].length > 3 ? ` +${agentUsage[skill.skill_id].length - 3} more` : ''}
-                  </span>
-                </div>
-              )}
+      {/* Tab Content */}
+      {activeTab === 'catalog' ? (
+        <>
+          {/* Search */}
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <div style={{ position: 'relative', flex: '1', maxWidth: '400px' }}>
+              <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-solar-text-secondary)' }} />
+              <Input placeholder="Search skills..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ paddingLeft: '2rem' }} />
             </div>
-          ))}
-        </div>
+            <span style={{ fontSize: '0.8125rem', color: 'var(--color-solar-text-secondary)' }}>
+              {filtered.length} skill{filtered.length !== 1 ? 's' : ''} registered
+            </span>
+          </div>
+
+          {/* Grid view */}
+          {isLoading ? (
+            <Skeleton lines={8} height="40px" />
+          ) : filtered.length === 0 ? (
+            <Card>
+              <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-solar-text-secondary)' }}>
+                No skills registered yet. Create your first skill to get started.
+              </div>
+            </Card>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1rem' }}>
+              {filtered.map(skill => (
+                <div key={skill.skill_id} style={{ background: 'var(--color-solar-card)', border: '1px solid var(--color-solar-border)', borderRadius: 'var(--radius-lg)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Wrench size={16} style={{ color: 'var(--color-planet-sun)' }} />
+                      <span style={{ fontWeight: 600, color: 'var(--color-solar-text-primary)' }}>{skill.display_name}</span>
+                    </div>
+                    <Badge variant="default">v{skill.version}</Badge>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--color-solar-text-secondary)', lineHeight: 1.4 }}>{skill.description}</p>
+                  <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                    {skill.tool_groups.map(g => (
+                      <span key={g} style={{ background: 'var(--color-solar-surface)', border: '1px solid var(--color-solar-border)', borderRadius: '4px', padding: '0.125rem 0.5rem', fontSize: '0.6875rem', color: 'var(--color-solar-text-secondary)' }}>{g}</span>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                    {skill.compatible_tiers.map(t => <Badge key={t} variant="info">{t}</Badge>)}
+                  </div>
+                  {agentUsage[skill.skill_id] && (
+                    <div style={{ borderTop: '1px solid var(--color-solar-border)', paddingTop: '0.5rem', marginTop: '0.25rem' }}>
+                      <span style={{ fontSize: '0.6875rem', color: 'var(--color-solar-text-secondary)' }}>
+                        Used by: {agentUsage[skill.skill_id].slice(0, 3).join(', ')}{agentUsage[skill.skill_id].length > 3 ? ` +${agentUsage[skill.skill_id].length - 3} more` : ''}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <SkillAccessMatrix />
       )}
 
       {/* Register Modal */}

@@ -14,6 +14,7 @@ import {
   type ColumnDef,
 } from '@solar/ui';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Target, Activity, TrendingUp, Sliders, ChevronDown, ChevronRight } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -92,6 +93,14 @@ function RationaleExpander({ record }: { record: AdequationRecord }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function AdequationDashboard() {
+  return (
+    <Providers>
+      <AdequationDashboardContent />
+    </Providers>
+  );
+}
+
+function AdequationDashboardContent() {
   const [minScore, setMinScore] = useState(0.55);
   const [syncThreshold, setSyncThreshold] = useState(5000);
 

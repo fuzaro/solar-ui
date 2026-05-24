@@ -21,6 +21,7 @@ import {
 } from '@solar/ui';
 import type { Tenant, TenantPlan } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Building2, Plus, Search, Eye, Pause } from 'lucide-react';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
@@ -130,6 +131,14 @@ async function createTenant(data: { display_name: string; type: string; plan: Pa
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function TenantList() {
+  return (
+    <Providers>
+      <TenantListContent />
+    </Providers>
+  );
+}
+
+function TenantListContent() {
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();

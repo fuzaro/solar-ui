@@ -21,6 +21,7 @@ import {
   type ColumnDef,
 } from '@solar/ui';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Clock, Plus, Play, Pause, Calendar, Zap } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -170,6 +171,14 @@ const DEMO_EVENTS: EventSubscription[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function SchedulingPage() {
+  return (
+    <Providers>
+      <SchedulingPageContent />
+    </Providers>
+  );
+}
+
+function SchedulingPageContent() {
   const [showCreate, setShowCreate] = useState(false);
   const { toast } = useToast();
 

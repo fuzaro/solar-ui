@@ -14,6 +14,7 @@ import {
 } from '@solar/ui';
 import type { QualityGateResult } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Shield, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -124,6 +125,14 @@ const RESULT_COLUMNS: ColumnDef<GateResultRow>[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function QualityGates() {
+  return (
+    <Providers>
+      <QualityGatesContent />
+    </Providers>
+  );
+}
+
+function QualityGatesContent() {
   const [filterOutcome, setFilterOutcome] = useState<string>('');
 
   const { data: executions, isLoading } = useQuery({

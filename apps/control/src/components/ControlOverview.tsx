@@ -23,6 +23,7 @@ import {
   type HealthResponse,
 } from '@solar/api';
 import { solar } from './solarApi';
+import { Providers } from './Providers';
 import {
   Bot,
   Cpu,
@@ -137,6 +138,14 @@ const AGENT_COLUMNS: ColumnDef<Agent>[] = [
 // ─── Control Overview component ───────────────────────────────────────────────
 
 export function ControlOverview() {
+  return (
+    <Providers>
+      <ControlOverviewContent />
+    </Providers>
+  );
+}
+
+function ControlOverviewContent() {
   const { data: agentsData, isLoading: agentsLoading, error: agentsError } = useQuery<PaginatedResponse<Agent>>({
     queryKey: ['control', 'agents'],
     queryFn: () => solar.sun.agents.list({ page: 1, page_size: 20 }),

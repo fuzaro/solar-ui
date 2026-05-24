@@ -21,6 +21,7 @@ import {
 } from '@solar/ui';
 import type { Provider, CreateProviderRequest } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Server, Plus, RefreshCw, Trash2, Heart, Zap } from 'lucide-react';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
@@ -80,6 +81,14 @@ const COLUMNS: ColumnDef<Provider>[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function ProviderList() {
+  return (
+    <Providers>
+      <ProviderListContent />
+    </Providers>
+  );
+}
+
+function ProviderListContent() {
   const [showRegister, setShowRegister] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
