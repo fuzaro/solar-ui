@@ -9,7 +9,10 @@ export function createVenusClient(opts: VenusClientOptions) {
     apiRequest<T>(opts, method, path, body, query);
 
   return {
-    health: () => req<HealthResponse>('GET', '/health'),
+    // CR21 — Venus serve health em /v1/health, não root (inconsistência
+    // interna R3; Mars/Moon/Saturn servem em /health). Quando R3
+    // padronizar (CR23 aberto), voltar para '/health'.
+    health: () => req<HealthResponse>('GET', '/v1/health'),
 
     tasks: {
       /**
