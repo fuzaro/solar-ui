@@ -44,6 +44,8 @@ build-push: build push
 
 .PHONY: deploy
 deploy:
+	@echo ">>> Purging existing solar-ui job (force container swap)..."
+	-nomad job stop -purge solar-ui
 	@echo ">>> Deploying solar-ui to Nomad..."
 	nomad job run deploy/solar-ui.nomad
 

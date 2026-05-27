@@ -9,6 +9,47 @@ monorepo inteiro (não independente por package). Política completa em
 
 ---
 
+## [0.1.1] — 2026-05-27
+
+Fix bundle 2 — corrige 4 bugs estruturais descobertos no smoke pós-deploy
+de v0.1.0 (homolab 192.168.15.11:3080). Sem mudança de funcionalidade.
+Decisões em `cross-repo-adrs/maps/r5-fix-bundle-2-brief-for-code.md`
++ `r5-fix-bundle-2-patch-1-after-f5.md`.
+
+### Fixed
+
+- **CR15** — nginx vazava porta interna `:8080` em `Location:` headers
+  de auto-redirects (NAT Nomad 3080→8080). `port_in_redirect off` +
+  `absolute_redirect off` no http{} block (`537ec10`).
+- **CR17** — `ToastProvider` ausente em `Providers.tsx` causava hard
+  throw `useToast must be used within <ToastProvider>` em qualquer
+  action que disparasse toast em React island isolada. Adicionado nos
+  3 portais (`93edecc`).
+- **CR14** — 9 components (4 control + 5 engineering) usavam `useQuery`
+  sem `<Providers>` wrap, crashando com `No QueryClient set` quando
+  hidratados como Astro islands. Refactor Content+wrapper (`fd8254d`).
+  Sub-components `ReplayControl`/`StepLedger` deixados sem wrap próprio
+  (herdam contexto de `ExecutionControl`).
+- **CR16** — `NAV_ITEMS` em `ControlShell`/`EngineeringShell` + 10
+  hrefs hardcoded em 5 components control apontavam para raiz
+  (`/agents`), caindo no portal console quando clicados de dentro de
+  `/control/` ou `/engineering/`. Convenção `PORTAL_BASE` local por
+  arquivo (`0058e09`).
+
+### Changed
+
+- **Makefile `deploy`** — agora purga job existente (`nomad job stop
+  -purge solar-ui`) antes do `nomad job run`, forçando troca de
+  container mesmo com tag de imagem fixa (`solar-ui:1.0.0`).
+
+### Deferred (carry-overs registrados)
+
+- **CR18** — convenção/lint rule para hrefs cross-portal (evitar
+  regressão futura de PORTAL_BASE). Próximo brief Cowork.
+- CR1-CR13 — fora do escopo deste bundle, ver mapa de contratos.
+
+---
+
 ## [0.1.0] — 2026-05-27
 
 Primeiro release marcado de R5. Consolida os 16 commits iniciais
@@ -62,4 +103,5 @@ SolarSystemsAI per `cross-repo-adrs/ADR-001-r5-incorporation.md`.
 
 Próximas mudanças (entre releases) acumulam aqui até o próximo bump.
 
+[0.1.1]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.1
 [0.1.0]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.0
