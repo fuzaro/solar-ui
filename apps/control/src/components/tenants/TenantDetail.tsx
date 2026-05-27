@@ -18,6 +18,7 @@ import {
   FormField,
   Skeleton,
   QuotaBar,
+  AlertBanner,
   useToast,
   type ColumnDef,
 } from '@solar/ui';
@@ -90,32 +91,10 @@ function TenantDetailContent({ tenantId, onBack }: TenantDetailProps) {
 
   const tenant = tenants?.find(t => t.tenant_id === tenantId);
 
-  const { data: budget } = useQuery({
-    queryKey: ['tenants', 'budget', tenantId],
-    queryFn: () => solar.mars.budget.get(tenantId),
-    enabled: !!tenantId,
-  });
-
-  const { data: ledger } = useQuery<PaginatedResponse<BudgetLedgerEntry>>({
-    queryKey: ['tenants', 'ledger', tenantId],
-    queryFn: () => solar.mars.budget.ledger(tenantId, { page: 1, page_size: 20 }),
-    enabled: !!tenantId,
-  });
-
-  const grantMutation = useMutation({
-    mutationFn: (data: { amount: number; description?: string }) => solar.mars.budget.grant(tenantId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenants', 'budget', tenantId] });
-      queryClient.invalidateQueries({ queryKey: ['tenants', 'ledger', tenantId] });
-      toast({ title: 'Credits granted', type: 'success' });
-    },
-    onError: (err: any) => toast({ title: 'Grant failed', description: err?.message, type: 'error' }),
-  });
-
-  const { register: registerGrant, handleSubmit: handleGrant, reset: resetGrant, formState: { errors: grantErrors } } = useForm({
-    resolver: zodResolver(grantSchema),
-    defaultValues: { amount: 100, description: '' },
-  });
+  // CR20 + CR25 (v0.1.2) — budget/ledger/grant queries removidas.
+  // R5 inventou semantic per-tenant; Mars usa per-exec_id (spec) e
+  // Saturn não expõe budget_ledger via REST. Tab Budget abaixo virou
+  // stub honest. Reativar quando ADR R3 publicar endpoint REST de ledger.
 
   if (!tenant) {
     return <div style={{ padding: '2rem' }}><Skeleton lines={10} height="40px" /></div>;
@@ -203,54 +182,13 @@ function TenantDetailContent({ tenantId, onBack }: TenantDetailProps) {
         </Card>
       )}
 
-      {/* Budget Tab */}
+      {/* Budget Tab — stub (CR20 + CR25, v0.1.2) */}
       {activeTab === 'budget' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-            <Card title="Current Balance">
-              <div style={{ padding: '1rem', textAlign: 'center' }}>
-                <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--color-planet-saturn)' }}>{budget?.balance?.toFixed(2) ?? '—'}</p>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-solar-text-secondary)' }}>credits</p>
-              </div>
-            </Card>
-            <Card title="Total Spent">
-              <div style={{ padding: '1rem', textAlign: 'center' }}>
-                <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--color-aura-red)' }}>{budget?.spent?.toFixed(2) ?? '—'}</p>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-solar-text-secondary)' }}>credits used</p>
-              </div>
-            </Card>
-            <Card title="Budget Limit">
-              <div style={{ padding: '1rem', textAlign: 'center' }}>
-                <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--color-solar-text-primary)' }}>{budget?.limit?.toFixed(2) ?? '—'}</p>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-solar-text-secondary)' }}>total limit</p>
-              </div>
-            </Card>
-          </div>
-
-          {/* Grant Form */}
-          <Card title="Grant Credits">
-            <form onSubmit={handleGrant((data) => { grantMutation.mutate(data); resetGrant(); })} style={{ padding: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
-              <FormField label="Amount" error={grantErrors.amount?.message} style={{ width: '120px' }}>
-                <Input {...registerGrant('amount')} type="number" min={1} />
-              </FormField>
-              <FormField label="Description" error={grantErrors.description?.message} style={{ flex: 1 }}>
-                <Input {...registerGrant('description')} placeholder="Reason for credit grant..." />
-              </FormField>
-              <Button type="submit" variant="primary" size="sm" disabled={grantMutation.isPending}>
-                {grantMutation.isPending ? 'Granting...' : 'Grant Credits'}
-              </Button>
-            </form>
-          </Card>
-
-          {/* Ledger */}
-          <Card title="Budget Ledger">
-            <DataTable<BudgetLedgerEntry>
-              columns={LEDGER_COLUMNS}
-              data={ledger?.items ?? []}
-              emptyMessage="No budget transactions yet."
-            />
-          </Card>
-        </div>
+        <AlertBanner
+          type="warning"
+          title="Backend em construção"
+          description="O endpoint REST de budget/ledger per-tenant ainda não está exposto em R3 (CR20 aberto). Mars publica budget per-exec_id; Saturn tem tabela budget_ledger mas não publica via REST. Esta seção volta quando ADR R3 publicar GET /v1/budget/{tenant}/ledger (ou equivalente)."
+        />
       )}
 
       {/* Resources Tab */}

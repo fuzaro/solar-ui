@@ -1,6 +1,6 @@
 import type { ApiClientOptions } from '../client';
 import { apiRequest } from '../client';
-import type { BudgetLedgerEntry, HealthResponse, PaginatedResponse } from '../types';
+import type { HealthResponse, PaginatedResponse } from '../types';
 
 export function createMarsClient(opts: ApiClientOptions) {
   const req = <T>(method: string, path: string, body?: unknown, query?: Record<string, string | number | boolean | undefined>) =>
@@ -20,16 +20,11 @@ export function createMarsClient(opts: ApiClientOptions) {
         req<{ lines: string[] }>('GET', `/v1/executions/${execId}/logs`, undefined, params as Record<string, string | number | boolean | undefined>),
     },
 
-    budget: {
-      get: (tenantId: string) =>
-        req<{ balance: number; spent: number; limit: number }>('GET', `/v1/budget/${tenantId}`),
-      ledger: (tenantId: string, params?: { page?: number; page_size?: number }) =>
-        req<PaginatedResponse<BudgetLedgerEntry>>('GET', `/v1/budget/${tenantId}/ledger`, undefined, params as Record<string, string | number | boolean | undefined>),
-      grant: (tenantId: string, data: { amount: number; description?: string }) =>
-        req<BudgetLedgerEntry>('POST', `/v1/budget/${tenantId}/grant`, data),
-      reset: (tenantId: string) =>
-        req<void>('POST', `/v1/budget/${tenantId}/reset`),
-    },
+    // budget.* endpoints removidos em v0.1.2 (CR20 + CR25) — R5 inventou
+    // semantic per-tenant; Mars publica budget per-exec_id em
+    // /v1/budget/{exec_id} (routes.py:483) e Saturn não expõe budget_ledger
+    // via REST. Reintroduzir quando ADR R3 especificar endpoint REST de
+    // ledger (CR20 aberto).
 
     containers: {
       list: (params?: { status?: string; page?: number }) =>
