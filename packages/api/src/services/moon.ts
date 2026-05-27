@@ -21,10 +21,32 @@ export function createMoonClient(opts: ApiClientOptions) {
     },
 
     audit: {
-      list: (params?: { task_id?: string; tenant_id?: string; page?: number; page_size?: number }) =>
-        req<PaginatedResponse<AuditRecord>>('GET', '/v1/audit', undefined, params as Record<string, string | number | boolean | undefined>),
-      get: (recordId: string) => req<AuditRecord>('GET', `/v1/audit/${recordId}`),
-      verify: (recordId: string) => req<{ valid: boolean; chain_intact: boolean }>('GET', `/v1/audit/${recordId}/verify`),
+      // CR4 — Moon publica em /v1/audit/records/search (não /v1/audit).
+      // Shape e params divergem do PaginatedResponse R5 (Moon retorna
+      // {records, total} com limit/offset). Adapter abaixo preserva a
+      // interface PaginatedResponse + page/page_size para os callers
+      // (PlatformAudit, AuditPage) até R3 padronizar — CR-pending.
+      // Nota: caller console passava task_id; Moon usa exec_id na spec
+      // audit, então mapeamos task_id → exec_id (semantic alignment).
+      list: async (params?: { task_id?: string; tenant_id?: string; page?: number; page_size?: number; event?: string }): Promise<PaginatedResponse<AuditRecord>> => {
+        const pageSize = params?.page_size ?? 50;
+        const page = params?.page ?? 1;
+        const moonParams: Record<string, string | number | boolean | undefined> = {
+          limit: pageSize,
+          offset: (page - 1) * pageSize,
+          tenant_id: params?.tenant_id,
+          event: params?.event,
+          exec_id: params?.task_id,
+        };
+        const resp = await req<{ records: AuditRecord[]; total: number }>(
+          'GET', '/v1/audit/records/search', undefined, moonParams,
+        );
+        return { items: resp.records, total: resp.total, page, page_size: pageSize };
+      },
+      byTask: (taskId: string) =>
+        req<AuditRecord[]>('GET', `/v1/audit/records/${taskId}`),
+      // get/verify por record_id removidos em v0.1.2 — não localizados em
+      // Moon routes.py. Reintroduzir quando R3 publicar paths estáveis.
     },
 
     sessions: {
