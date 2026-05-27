@@ -4,6 +4,7 @@ import { type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@solar/auth';
 import { getSolarConfig } from '@solar/api';
+import { ToastProvider } from '@solar/ui';
 import { PortalGate } from './PortalGate';
 
 const queryClient = new QueryClient({
@@ -37,7 +38,9 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider saturnUrl={getSolarConfig().saturn} autoRefresh={false}>
         <PortalGate minimum="admin">
-          {children}
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </PortalGate>
       </AuthProvider>
     </QueryClientProvider>
