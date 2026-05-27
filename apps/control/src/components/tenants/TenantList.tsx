@@ -24,6 +24,9 @@ import { solar } from '../solarApi';
 import { Providers } from '../Providers';
 import { Building2, Plus, Search, Eye, Pause } from 'lucide-react';
 
+// CR16: prefix /control para hrefs cross-portal (ver ControlShell.tsx)
+const PORTAL_BASE = '/control';
+
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
 const createTenantSchema = z.object({
@@ -47,7 +50,7 @@ const COLUMNS: ColumnDef<Tenant>[] = [
     cell: (v, row) => (
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <Building2 size={14} style={{ color: 'var(--color-planet-saturn)' }} />
-        <a href={`/tenants?detail=${(row as Tenant).tenant_id}`} style={{ fontWeight: 500, color: 'var(--color-solar-text-primary)', textDecoration: 'none' }}>{String(v)}</a>
+        <a href={`${PORTAL_BASE}/tenants?detail=${(row as Tenant).tenant_id}`} style={{ fontWeight: 500, color: 'var(--color-solar-text-primary)', textDecoration: 'none' }}>{String(v)}</a>
       </div>
     ),
   },

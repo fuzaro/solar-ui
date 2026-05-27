@@ -37,65 +37,70 @@ const queryClient = new QueryClient({
   },
 });
 
+// CR16: hrefs precisam de prefix /control para roteamento cross-portal
+// funcionar. Astro `base` config quebraria shared_astro merge, então
+// declaramos local. Convenção registrada como CR18 (futuro: lint rule).
+const PORTAL_BASE = '/control';
+
 const NAV_ITEMS: NavItem[] = [
   {
-    href: '/',
+    href: `${PORTAL_BASE}/`,
     label: 'Overview',
     icon: <BarChart3 size={18} />,
     planet: 'sun',
   },
   {
-    href: '/agents',
+    href: `${PORTAL_BASE}/agents`,
     label: 'Agents',
     icon: <Bot size={18} />,
     planet: 'mars',
   },
   {
-    href: '/envelope',
+    href: `${PORTAL_BASE}/envelope`,
     label: 'Envelope',
     icon: <Mail size={18} />,
     planet: 'saturn',
   },
   {
-    href: '/models',
+    href: `${PORTAL_BASE}/models`,
     label: 'Models & Inference',
     icon: <Cpu size={18} />,
     planet: 'neptune',
     children: [
-      { href: '/models/providers', label: 'Providers',      icon: <Server       size={15} /> },
-      { href: '/models/registry',  label: 'Model Registry', icon: <Star         size={15} /> },
-      { href: '/models/quality',   label: 'Quality',        icon: <FlaskConical size={15} /> },
+      { href: `${PORTAL_BASE}/models/providers`, label: 'Providers',      icon: <Server       size={15} /> },
+      { href: `${PORTAL_BASE}/models/registry`,  label: 'Model Registry', icon: <Star         size={15} /> },
+      { href: `${PORTAL_BASE}/models/quality`,   label: 'Quality',        icon: <FlaskConical size={15} /> },
     ],
   },
   {
-    href: '/skills',
+    href: `${PORTAL_BASE}/skills`,
     label: 'Skills & Tools',
     icon: <Wrench size={18} />,
     planet: 'sun',
   },
   {
-    href: '/tenants',
+    href: `${PORTAL_BASE}/tenants`,
     label: 'Tenants & Users',
     icon: <Users size={18} />,
     planet: 'saturn',
     children: [
-      { href: '/tenants',       label: 'Tenants', icon: <Building2 size={15} /> },
-      { href: '/tenants/users', label: 'Users',   icon: <UserCog   size={15} /> },
+      { href: `${PORTAL_BASE}/tenants`,       label: 'Tenants', icon: <Building2 size={15} /> },
+      { href: `${PORTAL_BASE}/tenants/users`, label: 'Users',   icon: <UserCog   size={15} /> },
     ],
   },
   {
-    href: '/quality',
+    href: `${PORTAL_BASE}/quality`,
     label: 'Quality & Judgment',
     icon: <Scale size={18} />,
     planet: 'themis',
     children: [
-      { href: '/quality/adequation', label: 'Adequation',    icon: <Target size={15} /> },
-      { href: '/quality/gates',      label: 'Quality Gates', icon: <Shield size={15} /> },
-      { href: '/quality/themis',     label: 'Themis',        icon: <Gavel  size={15} /> },
+      { href: `${PORTAL_BASE}/quality/adequation`, label: 'Adequation',    icon: <Target size={15} /> },
+      { href: `${PORTAL_BASE}/quality/gates`,      label: 'Quality Gates', icon: <Shield size={15} /> },
+      { href: `${PORTAL_BASE}/quality/themis`,     label: 'Themis',        icon: <Gavel  size={15} /> },
     ],
   },
   {
-    href: '/scheduling',
+    href: `${PORTAL_BASE}/scheduling`,
     label: 'Scheduling',
     icon: <Clock size={18} />,
     planet: 'sun',

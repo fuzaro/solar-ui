@@ -26,6 +26,9 @@ import { solar } from '../solarApi';
 import { Providers } from '../Providers';
 import { ArrowLeft, Settings, Users, Wallet, Database } from 'lucide-react';
 
+// CR16: prefix /control para hrefs cross-portal (ver ControlShell.tsx)
+const PORTAL_BASE = '/control';
+
 // ─── Plan Schema ──────────────────────────────────────────────────────────────
 
 const planSchema = z.object({
@@ -256,7 +259,7 @@ function TenantDetailContent({ tenantId, onBack }: TenantDetailProps) {
           <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-solar-text-secondary)' }}>
             <Database size={32} style={{ marginBottom: '0.75rem', opacity: 0.5 }} />
             <p style={{ margin: 0, fontSize: '0.875rem' }}>Resource listing requires Sun resource registry connection.</p>
-            <Button variant="secondary" size="sm" style={{ marginTop: '1rem' }} onClick={() => window.location.href = `/tenants`}>
+            <Button variant="secondary" size="sm" style={{ marginTop: '1rem' }} onClick={() => window.location.href = `${PORTAL_BASE}/tenants`}>
               Configure Resources
             </Button>
           </div>

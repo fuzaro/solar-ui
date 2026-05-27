@@ -37,6 +37,9 @@ import {
   TrendingUp,
 } from 'lucide-react';
 
+// CR16: prefix /control para hrefs cross-portal (ver ControlShell.tsx)
+const PORTAL_BASE = '/control';
+
 // ─── Health aggregation ───────────────────────────────────────────────────────
 
 function statusToAura(status?: string): AuraBand {
@@ -268,16 +271,16 @@ function ControlOverviewContent() {
         {/* Quick Actions */}
         <div style={{ background: 'var(--color-solar-card)', border: '1px solid var(--color-solar-border)', borderRadius: 'var(--radius-lg)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <p style={{ margin: 0, fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-solar-text-primary)' }}>Quick Actions</p>
-          <Button variant="primary" size="sm" style={{ justifyContent: 'flex-start', gap: '0.5rem' }} onClick={() => window.location.href = '/agents'}>
+          <Button variant="primary" size="sm" style={{ justifyContent: 'flex-start', gap: '0.5rem' }} onClick={() => window.location.href = `${PORTAL_BASE}/agents`}>
             <Plus size={14} /> Register Agent
           </Button>
-          <Button variant="secondary" size="sm" style={{ justifyContent: 'flex-start', gap: '0.5rem' }} onClick={() => window.location.href = '/models/providers'}>
+          <Button variant="secondary" size="sm" style={{ justifyContent: 'flex-start', gap: '0.5rem' }} onClick={() => window.location.href = `${PORTAL_BASE}/models/providers`}>
             <Server size={14} /> Register Provider
           </Button>
-          <Button variant="secondary" size="sm" style={{ justifyContent: 'flex-start', gap: '0.5rem' }} onClick={() => window.location.href = '/tenants'}>
+          <Button variant="secondary" size="sm" style={{ justifyContent: 'flex-start', gap: '0.5rem' }} onClick={() => window.location.href = `${PORTAL_BASE}/tenants`}>
             <UserPlus size={14} /> Create Tenant
           </Button>
-          <Button variant="secondary" size="sm" style={{ justifyContent: 'flex-start', gap: '0.5rem' }} onClick={() => window.location.href = '/skills'}>
+          <Button variant="secondary" size="sm" style={{ justifyContent: 'flex-start', gap: '0.5rem' }} onClick={() => window.location.href = `${PORTAL_BASE}/skills`}>
             <Star size={14} /> Register Skill
           </Button>
         </div>
@@ -287,7 +290,7 @@ function ControlOverviewContent() {
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
           <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-solar-text-primary)', margin: 0 }}>Registered Agents</p>
-          <Button variant="ghost" size="sm" onClick={() => window.location.href = '/agents'}>View All →</Button>
+          <Button variant="ghost" size="sm" onClick={() => window.location.href = `${PORTAL_BASE}/agents`}>View All →</Button>
         </div>
         {agentsLoading ? (
           <Skeleton lines={6} height="40px" />

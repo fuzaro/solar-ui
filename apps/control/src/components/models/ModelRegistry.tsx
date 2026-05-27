@@ -24,6 +24,9 @@ import { solar } from '../solarApi';
 import { Providers } from '../Providers';
 import { Cpu, Plus, Search, Star } from 'lucide-react';
 
+// CR16: prefix /control para hrefs cross-portal (ver ControlShell.tsx)
+const PORTAL_BASE = '/control';
+
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
 const modelSchema = z.object({
@@ -48,7 +51,7 @@ const COLUMNS: ColumnDef<Model>[] = [
     cell: (v, row) => (
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <Cpu size={14} style={{ color: 'var(--color-planet-neptune)' }} />
-        <a href={`/models/registry?detail=${(row as Model).model_id}`} style={{ color: 'var(--color-solar-text-primary)', fontWeight: 500, textDecoration: 'none' }}>{String(v)}</a>
+        <a href={`${PORTAL_BASE}/models/registry?detail=${(row as Model).model_id}`} style={{ color: 'var(--color-solar-text-primary)', fontWeight: 500, textDecoration: 'none' }}>{String(v)}</a>
       </div>
     ),
   },
@@ -60,7 +63,7 @@ const COLUMNS: ColumnDef<Model>[] = [
   {
     key: 'provider_id',
     header: 'Provider',
-    cell: (v) => <a href={`/models/providers`} style={{ fontSize: '0.8125rem', color: 'var(--color-planet-neptune)', textDecoration: 'none' }}>{String(v)}</a>,
+    cell: (v) => <a href={`${PORTAL_BASE}/models/providers`} style={{ fontSize: '0.8125rem', color: 'var(--color-planet-neptune)', textDecoration: 'none' }}>{String(v)}</a>,
   },
   {
     key: 'tier',

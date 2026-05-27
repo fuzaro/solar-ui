@@ -29,51 +29,56 @@ const queryClient = new QueryClient({
   },
 });
 
+// CR16: hrefs precisam de prefix /engineering para roteamento cross-portal
+// funcionar. Astro `base` config quebraria shared_astro merge, então
+// declaramos local. Convenção registrada como CR18.
+const PORTAL_BASE = '/engineering';
+
 const NAV_ITEMS: NavItem[] = [
   {
-    href: '/',
+    href: `${PORTAL_BASE}/`,
     label: 'Topology',
     icon: <Globe size={18} />,
     planet: 'mercury',
   },
   {
-    href: '/services',
+    href: `${PORTAL_BASE}/services`,
     label: 'Services',
     icon: <Server size={18} />,
     planet: 'moon',
   },
   {
-    href: '/executions',
+    href: `${PORTAL_BASE}/executions`,
     label: 'Executions',
     icon: <Activity size={18} />,
     planet: 'mars',
   },
   {
-    href: '/security',
+    href: `${PORTAL_BASE}/security`,
     label: 'Security',
     icon: <Lock size={18} />,
     planet: 'pluto',
   },
   {
-    href: '/parameters',
+    href: `${PORTAL_BASE}/parameters`,
     label: 'Parameters',
     icon: <Settings size={18} />,
     planet: 'saturn',
   },
   {
-    href: '/infrastructure',
+    href: `${PORTAL_BASE}/infrastructure`,
     label: 'Infrastructure',
     icon: <HardDrive size={18} />,
     planet: 'jupiter',
   },
   {
-    href: '/audit',
+    href: `${PORTAL_BASE}/audit`,
     label: 'Audit',
     icon: <FileSearch size={18} />,
     planet: 'moon',
   },
   {
-    href: '/billing',
+    href: `${PORTAL_BASE}/billing`,
     label: 'Billing',
     icon: <Receipt size={18} />,
     planet: 'saturn',

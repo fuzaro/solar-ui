@@ -26,6 +26,9 @@ import { solar } from '../solarApi';
 import { Providers } from '../Providers';
 import { Bot, Plus, Search, Filter } from 'lucide-react';
 
+// CR16: prefix /control para hrefs cross-portal (ver ControlShell.tsx)
+const PORTAL_BASE = '/control';
+
 // ─── Validation Schema ────────────────────────────────────────────────────────
 
 const registerSchema = z.object({
@@ -53,7 +56,7 @@ const COLUMNS: ColumnDef<Agent>[] = [
     cell: (v, row) => (
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <Bot size={14} style={{ color: 'var(--color-planet-mars)' }} />
-        <a href={`/agents?detail=${(row as Agent).agent_id}`} style={{ color: 'var(--color-solar-text-primary)', fontWeight: 500, textDecoration: 'none' }}>
+        <a href={`${PORTAL_BASE}/agents?detail=${(row as Agent).agent_id}`} style={{ color: 'var(--color-solar-text-primary)', fontWeight: 500, textDecoration: 'none' }}>
           {String(v)}
         </a>
       </div>
