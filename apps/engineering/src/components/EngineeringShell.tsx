@@ -9,6 +9,9 @@ import {
   type NavItem,
 } from '@solar/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '@solar/auth';
+import { getSolarConfig } from '@solar/api';
+import { PortalGate } from './PortalGate';
 import {
   Globe,
   Server,
@@ -92,21 +95,25 @@ export function EngineeringShell({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        <AppShell
-          sidebar={
-            <Sidebar
-              items={NAV_ITEMS}
-              collapsed={collapsed}
-              onCollapse={() => setCollapsed((c) => !c)}
-              activeHref={activeHref}
-            />
-          }
-          header={<Header title={title} />}
-        >
-          {children}
-        </AppShell>
-      </ToastProvider>
+      <AuthProvider saturnUrl={getSolarConfig().saturn} autoRefresh={false}>
+        <ToastProvider>
+          <PortalGate minimum="admin">
+            <AppShell
+              sidebar={
+                <Sidebar
+                  items={NAV_ITEMS}
+                  collapsed={collapsed}
+                  onCollapse={() => setCollapsed((c) => !c)}
+                  activeHref={activeHref}
+                />
+              }
+              header={<Header title={title} />}
+            >
+              {children}
+            </AppShell>
+          </PortalGate>
+        </ToastProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

@@ -2,6 +2,9 @@
 
 import { type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '@solar/auth';
+import { getSolarConfig } from '@solar/api';
+import { PortalGate } from './PortalGate';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,10 +16,24 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Providers para hidratação de page components em /control/*.
+ *
+ * Ordem (de fora para dentro):
+ * 1. QueryClientProvider — react-query cache scope desta ilha
+ * 2. AuthProvider — context auth (autoRefresh=false até ADR-016 Phase 3+
+ *    expor /v1/sessions/refresh em Pluto; ver CR1 do drill-down 2026-05-27)
+ * 3. PortalGate — gate por role mínimo 'member' (operadores)
+ * 4. children — page component
+ */
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <AuthProvider saturnUrl={getSolarConfig().saturn} autoRefresh={false}>
+        <PortalGate minimum="member">
+          {children}
+        </PortalGate>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
