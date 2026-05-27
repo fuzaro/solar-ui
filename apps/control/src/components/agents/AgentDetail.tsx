@@ -17,6 +17,7 @@ import {
 } from '@solar/ui';
 import type { Agent, Task, PaginatedResponse } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { ArrowLeft, TrendingUp, Wrench, Settings, GitBranch, History } from 'lucide-react';
 
 // ─── Quality chart (simple SVG bar chart) ─────────────────────────────────────
@@ -60,7 +61,15 @@ interface AgentDetailProps {
   onBack?: () => void;
 }
 
-export function AgentDetail({ agentId, onBack }: AgentDetailProps) {
+export function AgentDetail(props: AgentDetailProps) {
+  return (
+    <Providers>
+      <AgentDetailContent {...props} />
+    </Providers>
+  );
+}
+
+function AgentDetailContent({ agentId, onBack }: AgentDetailProps) {
   const [activeTab, setActiveTab] = useState('performance');
   const queryClient = useQueryClient();
   const { toast } = useToast();

@@ -21,6 +21,7 @@ import {
 } from '@solar/ui';
 import type { Model, ModelQuality } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { ArrowLeft, BarChart3, Settings, Activity } from 'lucide-react';
 
 // ─── SVG Line Chart ───────────────────────────────────────────────────────────
@@ -66,7 +67,15 @@ interface ModelDetailProps {
   onBack?: () => void;
 }
 
-export function ModelDetail({ modelId, onBack }: ModelDetailProps) {
+export function ModelDetail(props: ModelDetailProps) {
+  return (
+    <Providers>
+      <ModelDetailContent {...props} />
+    </Providers>
+  );
+}
+
+function ModelDetailContent({ modelId, onBack }: ModelDetailProps) {
   const [activeTab, setActiveTab] = useState('quality');
   const { toast } = useToast();
 

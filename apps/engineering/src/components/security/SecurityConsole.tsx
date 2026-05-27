@@ -19,6 +19,7 @@ import {
 } from '@solar/ui';
 import { createSolarClients, getSolarConfig, type Token } from '@solar/api';
 import { getSession } from '@solar/auth';
+import { Providers } from '../Providers';
 import { Key, Lock, Plus, Search, CheckCircle, XCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -135,6 +136,14 @@ const checkAccessSchema = z.object({
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function SecurityConsole() {
+  return (
+    <Providers>
+      <SecurityConsoleContent />
+    </Providers>
+  );
+}
+
+function SecurityConsoleContent() {
   const [activeTab, setActiveTab] = useState('tokens');
   const [showMintModal, setShowMintModal] = useState(false);
   const [revokeTokenId, setRevokeTokenId] = useState<string | null>(null);

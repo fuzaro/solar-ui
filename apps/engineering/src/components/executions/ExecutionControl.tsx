@@ -15,6 +15,7 @@ import {
 } from '@solar/ui';
 import { createSolarClients, getSolarConfig } from '@solar/api';
 import { getSession } from '@solar/auth';
+import { Providers } from '../Providers';
 import { RefreshCw } from 'lucide-react';
 import { StepLedger } from './StepLedger';
 import { ReplayControl } from './ReplayControl';
@@ -137,6 +138,14 @@ const EXECUTION_COLUMNS: ColumnDef<ExecutionRow>[] = [
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function ExecutionControl() {
+  return (
+    <Providers>
+      <ExecutionControlContent />
+    </Providers>
+  );
+}
+
+function ExecutionControlContent() {
   const [activeTab, setActiveTab] = useState('running');
   const [selectedExec, setSelectedExec] = useState<ExecutionRow | null>(null);
   const [drawerMode, setDrawerMode] = useState<'ledger' | 'replay' | null>(null);

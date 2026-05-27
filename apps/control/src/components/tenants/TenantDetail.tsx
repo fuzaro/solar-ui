@@ -23,6 +23,7 @@ import {
 } from '@solar/ui';
 import type { Tenant, Principal, BudgetLedgerEntry, PaginatedResponse } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { ArrowLeft, Settings, Users, Wallet, Database } from 'lucide-react';
 
 // ─── Plan Schema ──────────────────────────────────────────────────────────────
@@ -66,7 +67,15 @@ interface TenantDetailProps {
   onBack?: () => void;
 }
 
-export function TenantDetail({ tenantId, onBack }: TenantDetailProps) {
+export function TenantDetail(props: TenantDetailProps) {
+  return (
+    <Providers>
+      <TenantDetailContent {...props} />
+    </Providers>
+  );
+}
+
+function TenantDetailContent({ tenantId, onBack }: TenantDetailProps) {
   const [activeTab, setActiveTab] = useState('plan');
   const queryClient = useQueryClient();
   const { toast } = useToast();

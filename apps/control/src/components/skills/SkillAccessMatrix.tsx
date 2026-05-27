@@ -14,11 +14,20 @@ import {
 } from '@solar/ui';
 import type { Skill, SkillGrantResponse, FgaBackfillResponse } from '@solar/api';
 import { solar } from '../solarApi';
+import { Providers } from '../Providers';
 import { Shield, RefreshCw, UserCheck, AlertTriangle } from 'lucide-react';
 
 // ─── Skill Access Matrix ─────────────────────────────────────────────────────
 
 export function SkillAccessMatrix() {
+  return (
+    <Providers>
+      <SkillAccessMatrixContent />
+    </Providers>
+  );
+}
+
+function SkillAccessMatrixContent() {
   const [principalId, setPrincipalId] = useState('');
   const [activePrincipal, setActivePrincipal] = useState('');
   const [confirmRevoke, setConfirmRevoke] = useState<{ skillId: string; displayName: string } | null>(null);

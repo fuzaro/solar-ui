@@ -20,6 +20,7 @@ import {
 } from '@solar/ui';
 import { createSolarClients, getSolarConfig, type HealthResponse } from '@solar/api';
 import { getSession } from '@solar/auth';
+import { Providers } from '../Providers';
 import { Save, RotateCcw, Shield, Settings, Activity } from 'lucide-react';
 
 // ─── Solar clients ────────────────────────────────────────────────────────────
@@ -211,7 +212,15 @@ interface ServiceDetailProps {
   planet?: PlanetId;
 }
 
-export function ServiceDetail({ planet: initialPlanet }: ServiceDetailProps) {
+export function ServiceDetail(props: ServiceDetailProps) {
+  return (
+    <Providers>
+      <ServiceDetailContent {...props} />
+    </Providers>
+  );
+}
+
+function ServiceDetailContent({ planet: initialPlanet }: ServiceDetailProps) {
   const [selectedPlanet, setSelectedPlanet] = useState<PlanetId>(initialPlanet || 'venus');
   const [activeTab, setActiveTab] = useState('health');
   const [editedVars, setEditedVars] = useState<Record<string, string>>({});

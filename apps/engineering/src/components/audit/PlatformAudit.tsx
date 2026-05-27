@@ -16,6 +16,7 @@ import {
 } from '@solar/ui';
 import { createSolarClients, getSolarConfig, type AuditRecord } from '@solar/api';
 import { getSession } from '@solar/auth';
+import { Providers } from '../Providers';
 import { Search, Download, RefreshCw, CheckCircle, Shield } from 'lucide-react';
 
 // ─── Solar clients ────────────────────────────────────────────────────────────
@@ -106,6 +107,14 @@ const AUDIT_COLUMNS: ColumnDef<AuditRecord>[] = [
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function PlatformAudit() {
+  return (
+    <Providers>
+      <PlatformAuditContent />
+    </Providers>
+  );
+}
+
+function PlatformAuditContent() {
   const [filters, setFilters] = useState({
     tenant_id: '',
     principal_id: '',

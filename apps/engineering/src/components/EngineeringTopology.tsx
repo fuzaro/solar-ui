@@ -24,6 +24,7 @@ import {
 } from '@solar/ui';
 import { createSolarClients, getSolarConfig, type HealthResponse } from '@solar/api';
 import { getSession } from '@solar/auth';
+import { Providers } from './Providers';
 import {
   Server,
   AlertTriangle,
@@ -185,6 +186,14 @@ const SERVICE_COLUMNS: ColumnDef<ServiceRow>[] = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function EngineeringTopology() {
+  return (
+    <Providers>
+      <EngineeringTopologyContent />
+    </Providers>
+  );
+}
+
+function EngineeringTopologyContent() {
   const [selectedPlanet, setSelectedPlanet] = useState<PlanetId | null>(null);
   const [activeTab, setActiveTab] = useState('map');
 
