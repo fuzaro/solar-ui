@@ -10,9 +10,11 @@ export function createPlutoClient(opts: ApiClientOptions) {
     health: () => req<HealthResponse>('GET', '/health'),
 
     tokens: {
-      list: (params?: { task_id?: string; page?: number }) =>
-        req<Token[]>('GET', '/v1/tokens', undefined, params as Record<string, string | number | boolean | undefined>),
-      get: (tokenId: string) => req<Token>('GET', `/v1/tokens/${tokenId}`),
+      // list: REMOVIDO em v0.1.2 (CR22) — R5 inventou; fora da spec
+      //   Pluto §7.1. Não reintroduzir até R3 adicionar à spec.
+      // get: na spec Pluto §7.1 mas SEM código em routes_tokens.py
+      //   (CR24 aberto para implementação R3). Reintroduzir como
+      //   req<Token>('GET', `/v1/tokens/${tokenId}`) quando R3 land.
       revoke: (tokenId: string) => req<void>('POST', `/v1/tokens/${tokenId}/revoke`),
     },
 

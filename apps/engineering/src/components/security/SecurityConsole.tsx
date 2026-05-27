@@ -14,6 +14,7 @@ import {
   FormField,
   ConfirmDialog,
   JsonViewer,
+  AlertBanner,
   useToast,
   type ColumnDef,
 } from '@solar/ui';
@@ -145,30 +146,15 @@ export function SecurityConsole() {
 
 function SecurityConsoleContent() {
   const [activeTab, setActiveTab] = useState('tokens');
-  const [showMintModal, setShowMintModal] = useState(false);
-  const [revokeTokenId, setRevokeTokenId] = useState<string | null>(null);
+  // showMintModal / revokeTokenId removidos com tokens UI (CR22).
   const [accessResult, setAccessResult] = useState<{ allowed: boolean; reason?: string } | null>(null);
   const toast = useToast();
   const queryClient = useQueryClient();
 
-  // ─── Tokens query ─────────────────────────────────────────────────────────
-  const { data: tokens = [], isLoading: tokensLoading } = useQuery({
-    queryKey: ['security-tokens'],
-    queryFn: () => solar.pluto.tokens.list(),
-    enabled: activeTab === 'tokens',
-  });
-
-  const revokeMutation = useMutation({
-    mutationFn: (tokenId: string) => solar.pluto.tokens.revoke(tokenId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['security-tokens'] });
-      toast.success('Token revoked');
-      setRevokeTokenId(null);
-    },
-  });
-
-  // ─── Mint token form ──────────────────────────────────────────────────────
-  const mintForm = useForm({ resolver: zodResolver(mintSchema), defaultValues: { principal_id: '', task_id: '', scopes: 'read', ttl_seconds: 3600 } });
+  // CR22 (v0.1.2) — tokens list/get inventados removidos; revoke
+  // mantido em pluto.ts mas UI agora é stub (sem lista pra invocar
+  // revoke). Token mgmt volta quando R3 implementar GET /v1/tokens/{id}
+  // (CR24 aberto).
 
   // ─── Check access form ────────────────────────────────────────────────────
   const accessForm = useForm({ resolver: zodResolver(checkAccessSchema), defaultValues: { principal_id: '', resource_id: '', action: 'read' } });
@@ -196,25 +182,13 @@ function SecurityConsoleContent() {
         ]}
       />
 
-      {/* ═══ Tokens Tab ═══ */}
+      {/* ═══ Tokens Tab — stub (CR22, v0.1.2) ═══ */}
       {activeTab === 'tokens' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant="primary" size="sm" onClick={() => setShowMintModal(true)}>
-              <Plus size={14} /> Mint Token
-            </Button>
-          </div>
-
-          <DataTable<Token>
-            columns={TOKEN_COLUMNS}
-            data={tokens}
-            emptyMessage={tokensLoading ? 'Loading tokens…' : 'No tokens found.'}
-            rowActions={(row) => [
-              { label: 'Validate', onClick: () => toast.success('Token valid', `Token ${row.token_id.slice(0,8)}… is ${row.status}`) },
-              { label: 'Revoke', onClick: () => setRevokeTokenId(row.token_id), destructive: true },
-            ]}
-          />
-        </div>
+        <AlertBanner
+          type="warning"
+          title="Token Management — Em construção"
+          description="Token list/lookup aguarda implementação em Pluto (CR22 + CR24). Spec pluto-security.md §7.1 prevê GET /v1/tokens/{id} e POST /v1/tokens/refresh — ambos ainda sem código em routes_tokens.py. POST /v1/tokens/{id}/revoke já está implementado mas precisa de lista pra invocar."
+        />
       )}
 
       {/* ═══ Certificates Tab ═══ */}
@@ -335,35 +309,9 @@ function SecurityConsoleContent() {
         </div>
       )}
 
-      {/* ─── Mint Token Modal ─── */}
-      <Modal open={showMintModal} onClose={() => setShowMintModal(false)} title="Mint New Token">
-        <form onSubmit={mintForm.handleSubmit((data) => { setShowMintModal(false); toast.success('Token minted'); })} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <FormField label="Principal ID" error={mintForm.formState.errors.principal_id?.message}>
-            <Input {...mintForm.register('principal_id')} placeholder="user:alice" style={{ fontFamily: 'var(--font-mono)' }} />
-          </FormField>
-          <FormField label="Task ID" error={mintForm.formState.errors.task_id?.message}>
-            <Input {...mintForm.register('task_id')} placeholder="task_xxx" style={{ fontFamily: 'var(--font-mono)' }} />
-          </FormField>
-          <FormField label="Scopes (comma-separated)" error={mintForm.formState.errors.scopes?.message}>
-            <Input {...mintForm.register('scopes')} placeholder="read,submit" style={{ fontFamily: 'var(--font-mono)' }} />
-          </FormField>
-          <FormField label="TTL (seconds)" error={mintForm.formState.errors.ttl_seconds?.message}>
-            <Input {...mintForm.register('ttl_seconds')} type="number" style={{ fontFamily: 'var(--font-mono)' }} />
-          </FormField>
-          <Button type="submit" variant="primary"><Key size={14} /> Mint Token</Button>
-        </form>
-      </Modal>
-
-      {/* Revoke confirmation */}
-      <ConfirmDialog
-        open={!!revokeTokenId}
-        onCancel={() => setRevokeTokenId(null)}
-        onConfirm={() => revokeTokenId && revokeMutation.mutate(revokeTokenId)}
-        title="Revoke Token"
-        description={`Permanently revoke token ${revokeTokenId?.slice(0, 16)}…? This cannot be undone.`}
-        confirmLabel="Revoke"
-        destructive
-      />
+      {/* Mint Modal + Revoke ConfirmDialog removidos com a tokens UI
+          (CR22). Voltarão quando R3 implementar list/get/refresh
+          (CR24 aberto). */}
     </div>
   );
 }
