@@ -9,6 +9,60 @@ monorepo inteiro (não independente por package). Política completa em
 
 ---
 
+## [0.1.2] — 2026-05-27
+
+Fix bundle 3 — corrige 4 drifts cross-repo expostos em Bloco D
+(navegação end-to-end com session real) + 1 drift estrutural
+identificado em drill-down. Princípio operador: **descartar** o que
+R5 inventou sem spec/ADR R3; **stub** o que está em spec mas não
+implementado; **fix** paths errados; **workaround** inconsistências
+internas R3.
+
+Decisões em
+`cross-repo-adrs/maps/r5-fix-bundle-3-brief-for-code.md` + mapa
+de contratos (CR4, CR20-CR25).
+
+### Fixed
+
+- **CR4** — `services/moon.ts → audit.list` chamava `/v1/audit` (404).
+  Moon publica em `/v1/audit/records/search`. Adapter local traduz
+  shape `{records, total}` → `PaginatedResponse{items, total, page,
+  page_size}` e params `page/page_size` → `limit/offset` (+ `task_id`
+  → `exec_id`). Preserva interface dos callers (PlatformAudit, AuditPage)
+  sem mudança neles. Adicionado `byTask(taskId)`. (`6f61b9e`)
+
+### Removed
+
+- **CR20 + CR25** — `services/mars.ts → budget.{get|ledger|grant|reset}`
+  removidos. R5 inventou semantic per-tenant; Mars publica budget
+  per-`exec_id` (spec, `routes.py:483`) e Saturn não expõe
+  `budget_ledger` via REST. `BillingPage` virou stub com AlertBanner
+  "Backend em construção" apontando CR20 aberto. `TenantDetail` aba
+  Budget idem (scope expansion documentada no commit). (`18c2e9d`)
+- **CR22** — `services/pluto.ts → tokens.list` removido (R5 inventou,
+  fora da spec Pluto §7.1). `tokens.get` comentado aguardando R3
+  (CR24 aberto). `SecurityConsole` aba Tokens vira AlertBanner stub;
+  Mint modal + Revoke ConfirmDialog removidos (sem lista pra invocar).
+  Outras abas (Certificates, Access, Anomalies) intactas. (`c99bdd7`)
+
+### Changed
+
+- **CR21** — `services/venus.ts` e `services/neptune.ts` chamam
+  `/v1/health` (Venus/Neptune servem em `/v1/health`; demais planetas
+  servem em `/health`). Quando R3 padronizar (CR23 aberto), voltar
+  para `/health` nos 2 lugares. (`9e8a1ee`)
+
+### Deferred (carry-overs registrados)
+
+- **CR20** — ADR R3 para endpoint REST de budget/ledger (Saturn ou Mars?).
+- **CR23** — Padronização de health path em R3 (Venus/Neptune servir
+  também em `/health`).
+- **CR24** — Implementar `GET /v1/tokens/{id}` em Pluto (na spec
+  §7.1; falta código em `routes_tokens.py`).
+- CR1-CR3, CR5-CR13, CR18 — outros carry-overs abertos no mapa.
+
+---
+
 ## [0.1.1] — 2026-05-27
 
 Fix bundle 2 — corrige 4 bugs estruturais descobertos no smoke pós-deploy
@@ -103,5 +157,6 @@ SolarSystemsAI per `cross-repo-adrs/ADR-001-r5-incorporation.md`.
 
 Próximas mudanças (entre releases) acumulam aqui até o próximo bump.
 
+[0.1.2]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.2
 [0.1.1]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.1
 [0.1.0]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.0
