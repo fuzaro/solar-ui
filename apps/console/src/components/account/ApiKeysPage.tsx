@@ -56,7 +56,7 @@ function ApiKeysPageContent() {
 
   const { data, isLoading, error } = useQuery<PaginatedResponse<ApiKey>>({
     queryKey: ['api-keys'],
-    queryFn: () => solar.saturn.executions.list({ tenant_id: session?.tenantId, page: 1, page_size: 50 }) as any,
+    queryFn: () => solar.mars.executions.list({ tenant_id: session?.tenantId, page: 1, page_size: 50 }) as any,
   });
 
   const createMutation = useMutation({

@@ -24,10 +24,9 @@ export function createSaturnClient(opts: ApiClientOptions) {
         req<AuthValidateResponse>('POST', '/v1/auth/validate', { token }),
     },
 
-    executions: {
-      list: (params?: { tenant_id?: string; page?: number; page_size?: number }) =>
-        req<PaginatedResponse<Record<string, unknown>>>('GET', '/v1/executions', undefined, params as Record<string, string | number | boolean | undefined>),
-    },
+    // executions removido em v0.1.3 (CR2) — Saturn não publica
+    // /v1/executions; Mars publica (filtros task_id/status/tenant_id/
+    // page/page_size é superset). Usar solar.mars.executions.list.
 
     audit: {
       emit: (event: { event_type: string; payload: Record<string, unknown> }) =>
