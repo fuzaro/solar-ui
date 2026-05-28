@@ -21,13 +21,16 @@ export function createMoonClient(opts: ApiClientOptions) {
     },
 
     audit: {
-      // CR4 — Moon publica em /v1/audit/records/search (não /v1/audit).
-      // Shape e params divergem do PaginatedResponse R5 (Moon retorna
-      // {records, total} com limit/offset). Adapter abaixo preserva a
-      // interface PaginatedResponse + page/page_size para os callers
-      // (PlatformAudit, AuditPage) até R3 padronizar — CR-pending.
-      // Nota: caller console passava task_id; Moon usa exec_id na spec
-      // audit, então mapeamos task_id → exec_id (semantic alignment).
+      // CR4 (v0.1.2) — Moon publica em /v1/audit/records/search com
+      //   {records, total} + limit/offset; adapter de wrapper.
+      // CR26 (v0.1.3) — adapter expandido para mapear FIELDS do item
+      //   também (não só wrapper). Moon retorna {audit_id, event,
+      //   detail, content_hash, occurred_at, ...} mas R5 AuditRecord
+      //   espera {record_id, event_type, payload, hash, created_at, ...}.
+      //   Mapping abaixo é boundary translation única — AuditRecord
+      //   em types.ts permanece como contrato consumer-facing.
+      //   Caller console passa task_id; Moon usa exec_id na spec audit
+      //   e Moon.task_id é sempre null — mapeamos exec_id→task_id.
       list: async (params?: { task_id?: string; tenant_id?: string; page?: number; page_size?: number; event?: string }): Promise<PaginatedResponse<AuditRecord>> => {
         const pageSize = params?.page_size ?? 50;
         const page = params?.page ?? 1;
@@ -38,10 +41,26 @@ export function createMoonClient(opts: ApiClientOptions) {
           event: params?.event,
           exec_id: params?.task_id,
         };
-        const resp = await req<{ records: AuditRecord[]; total: number }>(
+        const raw = await req<{ records: Record<string, unknown>[]; total: number }>(
           'GET', '/v1/audit/records/search', undefined, moonParams,
         );
-        return { items: resp.records, total: resp.total, page, page_size: pageSize };
+        return {
+          items: raw.records.map((r): AuditRecord => ({
+            record_id:     String(r.audit_id ?? ''),
+            task_id:       (r.exec_id as string | null | undefined) ?? null,
+            principal_id:  String(r.principal_id ?? ''),
+            tenant_id:     String(r.tenant_id ?? ''),
+            event_type:    String(r.event ?? ''),
+            payload:       (r.detail as Record<string, unknown>) ?? {},
+            hash:          String(r.content_hash ?? ''),
+            prev_hash:     String(r.prev_hash ?? ''),
+            created_at:    String(r.occurred_at ?? ''),
+            planet_source: 'moon',
+          })),
+          total: raw.total,
+          page,
+          page_size: pageSize,
+        };
       },
       byTask: (taskId: string) =>
         req<AuditRecord[]>('GET', `/v1/audit/records/${taskId}`),
