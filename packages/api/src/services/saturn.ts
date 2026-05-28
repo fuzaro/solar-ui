@@ -31,11 +31,12 @@ export function createSaturnClient(opts: ApiClientOptions) {
     // solar.moon.audit.list (corrigido em v0.1.2 F8 + v0.1.3 F13).
 
     admin: {
-      getConfig: () =>
-        req<Record<string, unknown>>('GET', '/v1/admin/config'),
-
-      setConfig: (config: Record<string, unknown>) =>
-        req<void>('PUT', '/v1/admin/config', config),
+      // getConfig/setConfig removidos em v0.1.3 (CR5) — R5 inventou
+      // (Saturn não publica /v1/admin/config). R5 usava como "dicionário
+      // genérico" workaround para tenant mgmt. Tenant mgmt real aguarda
+      // ADR R3 (Saturn admin_routes.py já tem POST /v1/admin/tenants;
+      // falta leitura/listagem REST). CR5/CR20 abertos.
+      // ParameterEditor (engineering) usa dados hardcoded; não depende.
 
       // ─── Envelope Override Admin (ADR-010) ─────────────────────────────────────────
 
