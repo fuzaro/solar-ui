@@ -9,6 +9,64 @@ monorepo inteiro (não independente por package). Política completa em
 
 ---
 
+## [0.1.6] — 2026-05-28
+
+Fix bundle 7 — fecha 5 drifts cross-repo expostos no Bloco I (smoke
+sistemático pós-v0.1.5). Princípio consistente: descartar inventado,
+adapter para shape, stub páginas afetadas, fix params.
+
+Decisão em `cross-repo-adrs/maps/r5-fix-bundle-7-brief-for-code.md`
++ mapa de contratos (CR29-CR33).
+
+### Fixed
+
+- **CR32** — `ParameterEditor` envolvido com `<Providers>` (regressão
+  CR17 não-coberta no Bundle 4 F7b). useToast funciona em hydration.
+  (`48123b6`)
+- **CR33** — `TaskSubmitWizard` + `ResourcesPage` passam `tenant_id`
+  da session em `solar.sun.resources.list()` + `enabled` gate. Sun
+  exige tenant_id required (ADR-007 §D5); sem ele → 422. (`a127204`)
+
+### Changed
+
+- **CR29** — `services/neptune.ts` adicionou `adaptProvider` helper
+  mapeando `name→display_name`, `url→base_url`, `created_at→registered_at`,
+  `model_count: 0` default. ProviderList renderiza fields populados.
+  (`7e5f65f`)
+
+### Removed
+
+- **CR29** — `services/neptune.ts → providers.sync` removido + botões
+  Discover/Health em ProviderList. Neptune publica `/health` e
+  `/discover`, não `/sync` (R5 inventou). (`7e5f65f`)
+- **CR30** — `services/neptune.ts → models.listQuality` removido. Neptune
+  publica `/v1/models/{id}/quality` (por ID), não list. QualityAnalytics
+  virou stub honest (CR35 aberto). (`2b9abb6`)
+- **CR31** — `services/themis.ts` reduzido para `health` + `criteria.list`
+  (únicos endpoints que Themis publica entre os que R5 esperava).
+  Removidos: shadow.{recommend,list}, aura.{evaluate,get},
+  divergence.{analyze,list}, criteria.evaluate. ThemisShadow virou stub
+  honest (CR34 aberto). (`7c37724`)
+
+### Nota de discrepância (vs. brief F25)
+
+- **QualityGates** e **AdequationDashboard** NÃO foram stubados. O brief
+  assumiu dependência de Themis, mas ambos usam `mars.executions.list`
+  (refs a `themis` são só cor CSS). Stubar removeria feature funcional
+  = regressão. Mantidos intactos. `themis.health` preservado (usado por
+  ControlOverview/EngineeringTopology/ServiceDetail).
+
+### Deferred (carry-overs registrados)
+
+- **CR34** (novo) — ADR R3 para "API REST canônica de Themis"
+  (recognition, aura/envelope, aura/finalize, recommend/task vs. o que
+  R5 espera). Requer alinhamento com 4R-methodology.
+- **CR35** (novo) — Implementar `GET /v1/models/quality` (list) em
+  Neptune se feature for relevante para UI.
+- Carry-overs anteriores: CR1, CR5(re), CR20(re), CR23, CR24, CR6-CR13.
+
+---
+
 ## [0.1.5] — 2026-05-28
 
 Hot-fix Skills — CR28: Sun `/v1/skills` shape divergente quebrava
@@ -262,6 +320,7 @@ SolarSystemsAI per `cross-repo-adrs/ADR-001-r5-incorporation.md`.
 
 Próximas mudanças (entre releases) acumulam aqui até o próximo bump.
 
+[0.1.6]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.6
 [0.1.5]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.5
 [0.1.4]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.4
 [0.1.3]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.3
