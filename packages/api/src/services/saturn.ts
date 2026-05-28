@@ -2,11 +2,9 @@ import type { ApiClientOptions } from '../client';
 import { apiRequest } from '../client';
 import type {
   AuthValidateResponse,
-  AuditRecord,
   EnvelopeOverride,
   FgaBackfillResponse,
   HealthResponse,
-  PaginatedResponse,
   ReconcileOrphanRequest,
   ReconcileOrphanResponse,
   SkillGrantResponse,
@@ -28,13 +26,9 @@ export function createSaturnClient(opts: ApiClientOptions) {
     // /v1/executions; Mars publica (filtros task_id/status/tenant_id/
     // page/page_size é superset). Usar solar.mars.executions.list.
 
-    audit: {
-      emit: (event: { event_type: string; payload: Record<string, unknown> }) =>
-        req<AuditRecord>('POST', '/v1/audit', event),
-
-      list: (params?: { tenant_id?: string; page?: number; page_size?: number }) =>
-        req<PaginatedResponse<AuditRecord>>('GET', '/v1/audit', undefined, params as Record<string, string | number | boolean | undefined>),
-    },
+    // audit removido em v0.1.3 (CR3) — era código morto (zero callers).
+    // Emit real via Moon /v1/audit/records (per ADR-008); list via
+    // solar.moon.audit.list (corrigido em v0.1.2 F8 + v0.1.3 F13).
 
     admin: {
       getConfig: () =>
