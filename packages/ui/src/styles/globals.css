@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* CR27 — Tailwind v4 precisa de @source explícito para escanear
+   componentes desta package. Sem isso, apps consumidores só ganham
+   classes do próprio src/ deles e classes usadas em AppShell/Sidebar/
+   etc viram no-op no DOM. Glob relativo a este arquivo (styles/) →
+   resolve para packages/ui/src/**.
+   Nota: Tailwind v4 não aceita brace expansion {ts,tsx} no @source;
+   usar globs separados. */
+@source "../**/*.ts";
+@source "../**/*.tsx";
+
 @theme {
   /* ─── Backgrounds ─────────────────────────────────────── */
   --color-solar-bg:           #08090C;
