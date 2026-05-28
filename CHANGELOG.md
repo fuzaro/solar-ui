@@ -9,6 +9,29 @@ monorepo inteiro (não independente por package). Política completa em
 
 ---
 
+## [0.1.4] — 2026-05-27
+
+Hot-fix UI — Tailwind v4 não escaneava classes de `@solar/ui`,
+causando layout quebrado em todas as pages (Sidebar amontoado, fonte
+pequena, ícones reduzidos). Bug puramente CSS — Bundle 4 (CR26)
+permanece funcional. Detectado em Bloco H validation 2026-05-27.
+
+Decisão em `cross-repo-adrs/maps/r5-fix-bundle-5-brief-for-code.md`
++ mapa de contratos (CR27).
+
+### Fixed
+
+- **CR27** — `packages/ui/src/styles/globals.css` agora declara
+  `@source "../**/*.ts"` + `@source "../**/*.tsx"` para que Tailwind
+  v4 escaneie components de `@solar/ui`. Sem isso, classes em
+  AppShell/Sidebar/etc viravam no-op no CSS final dos 3 portais.
+  Nota: Tailwind v4 não aceita brace expansion `{ts,tsx}` em `@source`
+  (parser interpreta como CSS declaration); globs separados resolvem.
+  CSS compilado expandiu de residual para ~26KB por portal (esperado —
+  utility classes que faltavam passam a ser geradas). (`7f83ecc`)
+
+---
+
 ## [0.1.3] — 2026-05-27
 
 Fix bundle 4 — hot-fix de shape Nível 2 (CR26) + descartes consistentes
@@ -219,6 +242,7 @@ SolarSystemsAI per `cross-repo-adrs/ADR-001-r5-incorporation.md`.
 
 Próximas mudanças (entre releases) acumulam aqui até o próximo bump.
 
+[0.1.4]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.4
 [0.1.3]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.3
 [0.1.2]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.2
 [0.1.1]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.1
