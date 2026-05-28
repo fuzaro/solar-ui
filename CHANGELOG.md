@@ -9,6 +9,26 @@ monorepo inteiro (não independente por package). Política completa em
 
 ---
 
+## [0.1.5] — 2026-05-28
+
+Hot-fix Skills — CR28: Sun `/v1/skills` shape divergente quebrava
+SkillCatalog (TypeError em `compatible_tiers.map`). Mesmo pattern de
+CR26 (Bundle 4 F13) — adapter centralizado em service. Detectado em
+smoke ad-hoc do operador pós-Bundle 5.
+
+Decisão em `cross-repo-adrs/maps/r5-fix-bundle-6-brief-for-code.md`
++ mapa de contratos (CR28).
+
+### Fixed
+
+- **CR28** — `services/sun.ts → skills.list/get` agora traduz shape
+  Sun (sem `version` nem `compatible_tiers`) para `Skill` R5 com
+  defaults (`version: '1.0'`, `compatible_tiers: ['standard']`) via
+  helper `adaptSkill`. Type Skill inalterado. SkillCatalog renderiza
+  sem TypeError. (`b78b4b6`)
+
+---
+
 ## [0.1.4] — 2026-05-27
 
 Hot-fix UI — Tailwind v4 não escaneava classes de `@solar/ui`,
@@ -242,6 +262,7 @@ SolarSystemsAI per `cross-repo-adrs/ADR-001-r5-incorporation.md`.
 
 Próximas mudanças (entre releases) acumulam aqui até o próximo bump.
 
+[0.1.5]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.5
 [0.1.4]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.4
 [0.1.3]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.3
 [0.1.2]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.2
