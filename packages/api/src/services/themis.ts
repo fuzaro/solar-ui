@@ -1,7 +1,16 @@
 import type { ApiClientOptions } from '../client';
 import { apiRequest } from '../client';
-import type { ShadowRecommendation, AuraEnvelope, HealthResponse } from '../types';
+import type { HealthResponse } from '../types';
 
+// CR31 (v0.1.6) — R5 inventou uma API Themis que não corresponde à
+// real. Themis publica (poc/themis/app/routes/*.py): recognition,
+// hyde, audit, reputation, verdicts, aura/envelope, aura/finalize,
+// recommend/task, health, methodologies/criteria. Dos 9 endpoints
+// que R5 esperava, só `criteria.list` (GET /v1/criteria) existe.
+// Removidos: shadow.{recommend,list}, aura.{evaluate,get},
+// divergence.{analyze,list}, criteria.evaluate (todos inventados).
+// Reformulação da API canônica de Themis (alinhada com 4R-methodology)
+// é decisão arquitetural R3-side — CR34 aberto. Aqui só descartamos.
 export function createThemisClient(opts: ApiClientOptions) {
   const req = <T>(method: string, path: string, body?: unknown, query?: Record<string, string | number | boolean | undefined>) =>
     apiRequest<T>(opts, method, path, body, query);
@@ -9,34 +18,8 @@ export function createThemisClient(opts: ApiClientOptions) {
   return {
     health: () => req<HealthResponse>('GET', '/health'),
 
-    shadow: {
-      recommend: (data: { task_id: string; prompt: string; skills: string[] }) =>
-        req<ShadowRecommendation>('POST', '/v1/shadow/recommend', data),
-
-      list: (params?: { page?: number; page_size?: number }) =>
-        req<ShadowRecommendation[]>('GET', '/v1/shadow/recommendations', undefined, params as Record<string, string | number | boolean | undefined>),
-    },
-
-    aura: {
-      evaluate: (data: { exec_id: string; output: Record<string, unknown> }) =>
-        req<AuraEnvelope>('POST', '/v1/aura/evaluate', data),
-
-      get: (execId: string) =>
-        req<AuraEnvelope>('GET', `/v1/aura/${execId}`),
-    },
-
-    divergence: {
-      analyze: (data: { task_id: string }) =>
-        req<{ divergent: boolean; detail: string }>('POST', '/v1/divergence/analyze', data),
-
-      list: (params?: { page?: number }) =>
-        req<Record<string, unknown>[]>('GET', '/v1/divergence', undefined, params as Record<string, string | number | boolean | undefined>),
-    },
-
     criteria: {
       list: () => req<Record<string, unknown>[]>('GET', '/v1/criteria'),
-      evaluate: (data: { criterion_id: string; input: Record<string, unknown> }) =>
-        req<{ result: string; confidence: number }>('POST', '/v1/criteria/evaluate', data),
     },
   };
 }
