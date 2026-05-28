@@ -2,6 +2,22 @@ import type { ApiClientOptions } from '../client';
 import { apiRequest } from '../client';
 import type { Provider, CreateProviderRequest, Model, ModelQuality, HealthResponse, PaginatedResponse } from '../types';
 
+// CR29 — Neptune Provider response usa name/url/created_at; type R5
+// espera display_name/base_url/registered_at + model_count. Adapter
+// preenche os defaults sensatos. Mesmo pattern de moon.audit (CR26)
+// e sun.skills (CR28). Quando Neptune spec alinhar nomes (ADR R3),
+// remover fallbacks — type Provider não muda.
+const adaptProvider = (p: Record<string, unknown>): Provider => ({
+  provider_id:   String(p.provider_id ?? ''),
+  display_name:  String(p.display_name ?? p.name ?? ''),
+  type:          p.type as Provider['type'],
+  base_url:      String(p.base_url ?? p.url ?? ''),
+  status:        p.status as Provider['status'],
+  model_count:   (p.model_count as number) ?? 0,
+  auth_type:     p.auth_type as Provider['auth_type'],
+  registered_at: String(p.registered_at ?? p.created_at ?? ''),
+});
+
 export function createNeptuneClient(opts: ApiClientOptions) {
   const req = <T>(method: string, path: string, body?: unknown, query?: Record<string, string | number | boolean | undefined>) =>
     apiRequest<T>(opts, method, path, body, query);
@@ -13,11 +29,17 @@ export function createNeptuneClient(opts: ApiClientOptions) {
     health: () => req<HealthResponse>('GET', '/v1/health'),
 
     providers: {
-      list: () => req<Provider[]>('GET', '/v1/providers'),
-      get: (providerId: string) => req<Provider>('GET', `/v1/providers/${providerId}`),
+      list: async (): Promise<Provider[]> => {
+        const raw = await req<Record<string, unknown>[]>('GET', '/v1/providers');
+        return raw.map(adaptProvider);
+      },
+      get: async (providerId: string): Promise<Provider> =>
+        adaptProvider(await req<Record<string, unknown>>('GET', `/v1/providers/${providerId}`)),
       create: (data: CreateProviderRequest) => req<Provider>('POST', '/v1/providers', data),
       delete: (providerId: string) => req<void>('DELETE', `/v1/providers/${providerId}`),
-      sync: (providerId: string) => req<void>('POST', `/v1/providers/${providerId}/sync`),
+      // sync removido em v0.1.6 (CR29) — Neptune não publica
+      // /v1/providers/{id}/sync (R5 inventou). Neptune publica /health
+      // e /discover; reintroduzir como discover/health se houver demanda.
     },
 
     models: {

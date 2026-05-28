@@ -109,15 +109,9 @@ function ProviderListContent() {
     onError: (err: any) => toast({ title: 'Failed to register provider', description: err?.message, type: 'error' }),
   });
 
-  const syncMutation = useMutation({
-    mutationFn: (providerId: string) => solar.neptune.providers.sync(providerId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['providers'] });
-      queryClient.invalidateQueries({ queryKey: ['models'] });
-      toast({ title: 'Models discovered', description: 'Model sync completed.', type: 'success' });
-    },
-    onError: (err: any) => toast({ title: 'Sync failed', description: err?.message, type: 'error' }),
-  });
+  // syncMutation removido em v0.1.6 (CR29) — Neptune não publica
+  // /v1/providers/{id}/sync (R5 inventou). Botões Discover/Health
+  // removidos das rowActions abaixo.
 
   const deleteMutation = useMutation({
     mutationFn: (providerId: string) => solar.neptune.providers.delete(providerId),
@@ -129,12 +123,6 @@ function ProviderListContent() {
 
   const rowActions = (row: Provider) => (
     <div style={{ display: 'flex', gap: '0.25rem' }}>
-      <Button variant="ghost" size="sm" onClick={() => syncMutation.mutate(row.provider_id)} title="Discover Models">
-        <Zap size={14} />
-      </Button>
-      <Button variant="ghost" size="sm" onClick={() => syncMutation.mutate(row.provider_id)} title="Health Check">
-        <Heart size={14} />
-      </Button>
       <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(row.provider_id)} title="Delete" style={{ color: 'var(--color-aura-red)' }}>
         <Trash2 size={14} />
       </Button>
