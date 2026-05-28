@@ -50,7 +50,10 @@ export function createNeptuneClient(opts: ApiClientOptions) {
       updatePriority: (modelId: string, priority: number) =>
         req<Model>('PATCH', `/v1/models/${modelId}`, { priority }),
       getQuality: (modelId: string) => req<ModelQuality>('GET', `/v1/models/${modelId}/quality`),
-      listQuality: () => req<ModelQuality[]>('GET', '/v1/models/quality'),
+      // listQuality removido em v0.1.6 (CR30) — R5 inventou GET
+      // /v1/models/quality (list). Neptune publica /v1/models/{id}/quality
+      // por ID. Lazy-load por ID seria N+1; design correto é Neptune
+      // publicar list endpoint (CR35 aberto para R3).
     },
 
     inference: {
