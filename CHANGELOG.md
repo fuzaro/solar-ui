@@ -9,6 +9,68 @@ monorepo inteiro (não independente por package). Política completa em
 
 ---
 
+## [0.1.3] — 2026-05-27
+
+Fix bundle 4 — hot-fix de shape Nível 2 (CR26) + descartes consistentes
+com Bundle 3 (CR3, CR5) + drift routing (CR2) + sentinela contra
+regressão (CR18). Princípio mantido: descartar inventado, fix paths
+errados, stub páginas dependentes, proteger conventions.
+
+Decisões em `cross-repo-adrs/maps/r5-fix-bundle-4-brief-for-code.md`
++ mapa de contratos (CR2/CR3/CR5/CR18/CR26).
+
+### Fixed
+
+- **CR26** — Adapter Moon audit em `services/moon.ts` agora traduz
+  shape de **item individual** (não só wrapper, que foi v0.1.2 F8).
+  Moon retorna `{audit_id, event, detail, content_hash, occurred_at, ...}`;
+  R5 AuditRecord espera `{record_id, event_type, payload, hash,
+  created_at, ...}`. Mapping baseado em shape capturado via curl
+  pré-fix (`audit_id→record_id`, `event→event_type`, `detail→payload`,
+  `content_hash→hash`, `occurred_at→created_at`, `exec_id→task_id`,
+  `planet_source:='moon'`). Console `/audit/` não crasha; engineering
+  `/audit` renderiza colunas populadas. (`263901e`)
+
+### Changed
+
+- **CR2** — `solar.saturn.executions.list` movido para
+  `solar.mars.executions.list`. Saturn não publica `/v1/executions`;
+  Mars publica com filtros superset. Caller único atualizado:
+  `apps/console/src/components/account/ApiKeysPage.tsx:59`. (`24c1dde`)
+
+### Removed
+
+- **CR3** — `services/saturn.ts → audit.{emit,list}` removidos. Era
+  código morto (zero callers verified via grep). Emit real vai via
+  Moon `/v1/audit/records` per ADR-008; list via `moon.audit.list`
+  (corrigida em v0.1.2 F8 + v0.1.3 F13). (`9bb2ed3`)
+- **CR5** — `services/saturn.ts → admin.getConfig/setConfig` removidos.
+  R5 inventou (Saturn não publica `/v1/admin/config`); usavam-se como
+  workaround para tenant mgmt. `TenantList` + `TenantDetail` (control)
+  viraram stubs honest com AlertBanner "Backend em construção"
+  apontando CR5/CR20 abertos. ParameterEditor (engineering) intacto
+  (usa dados hardcoded; não dependia destes). (`3e2ac55`)
+
+### Added
+
+- **CR18** — `scripts/check-portal-base.sh` + integração ao
+  `npm run lint`. Sentinela contra regressão de PORTAL_BASE
+  convention instituída no Bundle 2 F6 b+c. Falha com mensagem clara
+  se algum component em `apps/{control,engineering}/` usar href
+  absoluto sem prefix de portal. Standalone: `npm run check-portal-base`.
+  (`8033cd3`)
+
+### Deferred (carry-overs registrados)
+
+- **CR5/CR20** (re-abertos) — ADR R3 para endpoint REST de tenant mgmt
+  (leitura/listagem) + ledger.
+- **CR1** — Pluto `/v1/sessions/refresh` (alinhado ADR-016 Phase 3).
+- **CR23** — Padronizar `/health` em Venus/Neptune (R3).
+- **CR24** — Implementar `GET /v1/tokens/{id}` em Pluto (na spec §7.1).
+- CR6-CR13 — outros carry-overs abertos no mapa.
+
+---
+
 ## [0.1.2] — 2026-05-27
 
 Fix bundle 3 — corrige 4 drifts cross-repo expostos em Bloco D
@@ -157,6 +219,7 @@ SolarSystemsAI per `cross-repo-adrs/ADR-001-r5-incorporation.md`.
 
 Próximas mudanças (entre releases) acumulam aqui até o próximo bump.
 
+[0.1.3]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.3
 [0.1.2]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.2
 [0.1.1]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.1
 [0.1.0]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.0
