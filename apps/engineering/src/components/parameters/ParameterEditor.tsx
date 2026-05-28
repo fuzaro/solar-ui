@@ -15,6 +15,7 @@ import {
   type PlanetId,
 } from '@solar/ui';
 import { Save, RotateCcw, Sliders } from 'lucide-react';
+import { Providers } from '../Providers';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -145,6 +146,14 @@ const PLANET_LIST: PlanetId[] = ['venus', 'neptune', 'mars', 'moon', 'saturn', '
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function ParameterEditor() {
+  return (
+    <Providers>
+      <ParameterEditorContent />
+    </Providers>
+  );
+}
+
+function ParameterEditorContent() {
   const [section, setSection] = useState<'global' | 'flags' | PlanetId>('global');
   const [editedVars, setEditedVars] = useState<Record<string, string>>({});
   const [showConfirm, setShowConfirm] = useState(false);
