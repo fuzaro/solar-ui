@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "lint": "turbo run lint",
+    "lint": "bash scripts/check-portal-base.sh && turbo run lint",
+    "check-portal-base": "bash scripts/check-portal-base.sh",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
