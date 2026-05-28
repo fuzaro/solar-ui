@@ -9,6 +9,34 @@ monorepo inteiro (não independente por package). Política completa em
 
 ---
 
+## [0.1.7] — 2026-05-28
+
+Hot-fix Resources — CR36a: Sun `/v1/resources` retorna array nu; R5
+ResourcesPage e TaskSubmitWizard esperam PaginatedResponse. Mesmo
+pattern de CR28 (Bundle 6 F21) e CR29 (Bundle 7 F23) — adapter
+centralizado em service. Fecha incompletude do Bundle 7 F27.
+
+Decisão em `cross-repo-adrs/maps/r5-fix-bundle-8-brief-for-code.md`
++ mapa de contratos (CR36a). CR36b (tenant_id UUID format) NÃO está no
+escopo deste bundle — resolvido por test-data + CR1 produção.
+
+### Fixed
+
+- **CR36a** — `services/sun.ts → resources.list` agora envolve o array
+  Sun em `PaginatedResponse{items, total, page, page_size}`. Type
+  Resource inalterado. ResourcesPage + TaskSubmitWizard renderizam
+  items corretamente. (`2790d33`)
+
+### Deferred
+
+- **CR36b** — Sun exige `tenant_id` em UUID válido (não-UUID → 500).
+  Resolução: test-data (operador injeta UUID real) + produção via
+  CR1 (Pluto session-mint emitirá JWT com tenant_id UUID). Não é
+  fix R5 (não derivar uuid5 client-side).
+- CR34, CR35 (Bundle 7), CR1, CR5/CR20(re), CR23, CR24, CR6-CR13.
+
+---
+
 ## [0.1.6] — 2026-05-28
 
 Fix bundle 7 — fecha 5 drifts cross-repo expostos no Bloco I (smoke
@@ -320,6 +348,7 @@ SolarSystemsAI per `cross-repo-adrs/ADR-001-r5-incorporation.md`.
 
 Próximas mudanças (entre releases) acumulam aqui até o próximo bump.
 
+[0.1.7]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.7
 [0.1.6]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.6
 [0.1.5]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.5
 [0.1.4]: https://github.com/fuzaro/solar-ui/releases/tag/v0.1.4
