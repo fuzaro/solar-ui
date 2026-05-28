@@ -2,6 +2,22 @@ import type { ApiClientOptions } from '../client';
 import { apiRequest } from '../client';
 import type { Task, Agent, RegisterAgentRequest, Resource, Skill, HealthResponse, PaginatedResponse } from '../types';
 
+// CR28 — Sun /v1/skills response não inclui `version` nem
+// `compatible_tiers` (ambos required no type Skill R5). Adapter
+// preenche defaults sensatos para satisfazer type + UI (SkillCatalog
+// fazia compatible_tiers.map → TypeError). Quando Sun spec adicionar
+// esses campos (ADR R3 futuro), basta remover os defaults — Skill
+// type não muda. Mesmo pattern de moon.audit.list (CR26, Bundle 4 F13).
+const adaptSkill = (s: Record<string, unknown>): Skill => ({
+  skill_id:          String(s.skill_id ?? ''),
+  display_name:      String(s.display_name ?? ''),
+  version:           (s.version as string) ?? '1.0',
+  description:       String(s.description ?? ''),
+  tool_groups:       (s.tool_groups as string[]) ?? [],
+  compatible_tiers:  (s.compatible_tiers as Skill['compatible_tiers']) ?? ['standard'],
+  parameters_schema: s.parameters_schema as Record<string, unknown> | undefined,
+});
+
 export function createSunClient(opts: ApiClientOptions) {
   const req = <T>(method: string, path: string, body?: unknown, query?: Record<string, string | number | boolean | undefined>) =>
     apiRequest<T>(opts, method, path, body, query);
@@ -34,8 +50,14 @@ export function createSunClient(opts: ApiClientOptions) {
     },
 
     skills: {
-      list: () => req<Skill[]>('GET', '/v1/skills'),
-      get: (skillId: string) => req<Skill>('GET', `/v1/skills/${skillId}`),
+      list: async (): Promise<Skill[]> => {
+        const raw = await req<Record<string, unknown>[]>('GET', '/v1/skills');
+        return raw.map(adaptSkill);
+      },
+      get: async (skillId: string): Promise<Skill> => {
+        const s = await req<Record<string, unknown>>('GET', `/v1/skills/${skillId}`);
+        return adaptSkill(s);
+      },
       register: (data: Partial<Skill>) => req<Skill>('POST', '/v1/skills', data),
     },
 
