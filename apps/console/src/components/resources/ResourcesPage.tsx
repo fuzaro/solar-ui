@@ -23,6 +23,7 @@ import {
 } from '@solar/ui';
 import type { Resource, PaginatedResponse, ResourceType, ResourceSensitivity } from '@solar/api';
 import { useSolar } from '../useSolar';
+import { useAuth } from '@solar/auth';
 import { Providers } from '../Providers';
 import { Plus, Trash2, Edit, RefreshCw, Search } from 'lucide-react';
 
@@ -58,12 +59,16 @@ function ResourcesPageContent() {
   const [sensitivityFilter, setSensitivityFilter] = useState('');
   const [healthFilter, setHealthFilter] = useState('');
   const solar = useSolar();
+  const { session } = useAuth();
   const queryClient = useQueryClient();
   const { addToast } = useToast();
 
   const { data, isLoading, error } = useQuery<PaginatedResponse<Resource>>({
-    queryKey: ['resources', typeFilter],
-    queryFn: () => solar.sun.resources.list({ type: typeFilter || undefined, page: 1 }),
+    queryKey: ['resources', typeFilter, session?.tenantId],
+    // CR33 — Sun /v1/resources exige tenant_id required (ADR-007 §D5);
+    // sem ele → 422. enabled gate evita chamada antes da session.
+    queryFn: () => solar.sun.resources.list({ tenant_id: session?.tenantId, type: typeFilter || undefined, page: 1 }),
+    enabled: !!session?.tenantId,
   });
 
   const createMutation = useMutation({

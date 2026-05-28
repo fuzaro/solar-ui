@@ -25,6 +25,7 @@ import {
 import type { Skill, Resource, TaskSubmitRequest, CaixaPayload } from '@solar/api';
 import { parseCaixaPayload } from '@solar/api';
 import { useSolar } from '../useSolar';
+import { useAuth } from '@solar/auth';
 import { Providers } from '../Providers';
 import { BalanceGateError } from './BalanceGateError';
 import {
@@ -83,6 +84,7 @@ function TaskSubmitWizardContent() {
   const [codeMode, setCodeMode] = useState(false);
   const [showJsonPreview, setShowJsonPreview] = useState(false);
   const solar = useSolar();
+  const { session } = useAuth();
   const { addToast } = useToast();
 
   const form = useForm<TaskFormData>({
@@ -110,8 +112,11 @@ function TaskSubmitWizardContent() {
   });
 
   const { data: resourcesData, isLoading: resourcesLoading } = useQuery({
-    queryKey: ['resources'],
-    queryFn: () => solar.sun.resources.list({ page: 1 }),
+    queryKey: ['resources', session?.tenantId],
+    // CR33 — Sun /v1/resources exige tenant_id required (ADR-007 §D5);
+    // sem ele → 422. enabled gate evita chamada antes da session.
+    queryFn: () => solar.sun.resources.list({ tenant_id: session?.tenantId, page: 1 }),
+    enabled: !!session?.tenantId,
   });
 
   const submitMutation = useMutation({
