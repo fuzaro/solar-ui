@@ -41,8 +41,25 @@ export function createSunClient(opts: ApiClientOptions) {
     },
 
     resources: {
-      list: (params?: { tenant_id?: string; type?: string; page?: number }) =>
-        req<PaginatedResponse<Resource>>('GET', '/v1/resources', undefined, params as Record<string, string | number | boolean | undefined>),
+      // CR36a (v0.1.7): Sun /v1/resources retorna array nu; R5 callers
+      // (ResourcesPage, TaskSubmitWizard) esperam PaginatedResponse.
+      // Adapter envolve. total = arr.length (Sun não pagina server-side
+      // hoje). Mesmo pattern de sun.skills (CR28) e neptune.providers (CR29).
+      //
+      // CR36b (separado, fora deste bundle): Sun exige tenant_id em UUID
+      // válido (não-UUID → 500). Resolução: test-data (operador injeta
+      // UUID) + produção via Pluto session-mint (CR1). NÃO derivar uuid5
+      // client-side.
+      list: async (params?: { tenant_id?: string; type?: string; page?: number; page_size?: number }): Promise<PaginatedResponse<Resource>> => {
+        const raw = await req<Resource[]>('GET', '/v1/resources', undefined, params as Record<string, string | number | boolean | undefined>);
+        const items = raw ?? [];
+        return {
+          items,
+          total: items.length,
+          page: params?.page ?? 1,
+          page_size: params?.page_size ?? items.length,
+        };
+      },
       get: (resourceId: string) => req<Resource>('GET', `/v1/resources/${resourceId}`),
       register: (data: Partial<Resource>) => req<Resource>('POST', '/v1/resources', data),
       update: (resourceId: string, data: Partial<Resource>) => req<Resource>('PATCH', `/v1/resources/${resourceId}`, data),
