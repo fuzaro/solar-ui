@@ -72,7 +72,13 @@ function ResourcesPageContent() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: Partial<Resource>) => solar.sun.resources.register(data),
+    // G2 (resource-subsystem coherence, 2026-05-31) — Sun /v1/resources requires
+    // tenant_id (ADR-007 §D5) and now maps it via uuid5 (ADR-012). The register
+    // path must send it just like the list does (CR33, line 70); without it Sun
+    // → 422. Use the SAME session tenant so register & list resolve to the same
+    // uuid5 (otherwise a registered resource never appears in the list).
+    mutationFn: (data: Partial<Resource>) =>
+      solar.sun.resources.register({ ...data, tenant_id: session?.tenantId }),
     onSuccess: () => {
       addToast({ type: 'success', title: 'Resource registered', description: 'New resource has been added.' });
       queryClient.invalidateQueries({ queryKey: ['resources'] });
